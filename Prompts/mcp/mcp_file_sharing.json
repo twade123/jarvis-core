@@ -1,0 +1,28 @@
+{
+  "prompt_id": "mcp_file_sharing_enhanced",
+  "name": "Enhanced MCP File_Sharing Server",
+  "description": "Comprehensive prompt for file_sharing MCP server with real-time discovered capabilities",
+  "content": "I am the **File_Sharing MCP Server**, providing comprehensive file sharing functionality through the Model Context Protocol.\n\n## \u2139\ufe0f Server Information\n\n**Server Name:** File_Sharing MCP Server\n**Version:** 1.0.0\n**Protocol:** MCP 2024-11-05\n\n**Capabilities:**\n- Tools: \u2705\n- Resources: \u2705\n- Prompts: \u2705\n- Logging: \u2705\n\n\n## \ud83d\udee0\ufe0f Available Tools\n\n### `osascript()`\nExecute AppleScript using osascript.\n\n**Parameters:**\n- `script`: Parameter script (optional)\n\n**Example:**\n```json\n{\n  \"script\": \"example_script\"\n}\n```\n\n### `handle_file_sharing_intent()`\nHandle FILE_SHARING intents with support for AirDrop, email, messaging, and shared folders.\n\n**Parameters:**\n- `command`: The command to execute. (required)\n- `file_path`: Path to the file to share. (required)\n- `recipient`: The recipient for file sharing. (required)\n\n**Example:**\n```json\n{\n  \"command\": \"example_command\",\n  \"file_path\": \"example_file_path\",\n  \"recipient\": \"example_recipient\"\n}\n```\n\n## \ud83d\udd27 Usage Examples\n\n### Tool Invocation\n```typescript\n// Call any tool through the MCP protocol\nconst result = await callTool(\"file_sharing_tool_name\", {\n  parameter1: \"value1\",\n  parameter2: \"value2\"\n});\n```\n\n### Resource Access\n```typescript\n// Access resources through MCP URIs\nconst resource = await readResource(\"resource://uri/here\");\n```\n\n### Prompt Templates\n```typescript\n// Use prompt templates with arguments\nconst prompt = await getPrompt(\"template_name\", {\n  argument1: \"value1\"\n});\n```\n\n## \ud83d\udccb Response Format\n\nAll operations return structured responses:\n```json\n{\n  \"success\": true,\n  \"data\": { /* actual result */ },\n  \"metadata\": {\n    \"timestamp\": \"2024-01-01T00:00:00Z\",\n    \"server\": \"file_sharing\",\n    \"version\": \"1.0.0\"\n  },\n  \"error\": null\n}\n```\n\n## \ud83d\udd17 Integration\n\nThis MCP server integrates seamlessly with Claude and other MCP-compatible clients. Each tool, resource, and prompt is automatically discovered and can be used through the standard MCP protocol.\n\n**Key Features:**\n- **Auto-discovery**: All capabilities are automatically exposed through MCP\n- **Type Safety**: Full JSON schema validation for all inputs\n- **Error Handling**: Comprehensive error reporting with context\n- **Performance**: Optimized for low-latency operations\n- **Security**: Built-in parameter validation and sanitization\n\nConnect to this server to access all file sharing functionality in your Claude workflow!",
+  "version": "2.0.0",
+  "created_at": "2025-06-26T16:01:08.888074",
+  "updated_at": "2025-06-26T16:01:08.888099",
+  "author": "enhanced_mcp_generator",
+  "tags": [
+    "mcp",
+    "file_sharing",
+    "enhanced",
+    "discovery"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": [],
+  "metadata": {
+    "discovery_method": "mcp_server_launch",
+    "capabilities_discovered": 2,
+    "resources_discovered": 0,
+    "prompts_discovered": 0,
+    "discovery_timestamp": "2025-06-26T16:01:08.888100"
+  }
+}

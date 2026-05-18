@@ -1,0 +1,20 @@
+{
+  "prompt_id": "mcp_structured_agent",
+  "name": "MCP Structured_Agent Server",
+  "description": "Detailed prompt for the structured_agent MCP server with real methods and examples",
+  "content": "I am the Structured_Agent MCP Server. I provide Provides structured agent functionality.\n\n## What I Can Do:\nProvides structured agent functionality\n\n## Common Use Cases:\n1. Manage structured agent operations\n\n\n## Available Tools:\nTools will be dynamically discovered when the MCP server starts.\n\n## Authentication:\nMay require authentication\n\n## Example Usage:\n```python\n# Call tools through MCP protocol\nresult = await call_tool(\"structured_agent_tool_name\", {\n    \"parameter1\": \"value1\",\n    \"parameter2\": \"value2\"\n})\n```\n\n## Response Format:\nAll tools return structured JSON responses with:\n- `success`: boolean indicating if operation succeeded\n- `data`: the actual result data\n- `error`: error message if operation failed\n\n## Integration:\nUse this MCP server to integrate structured agent functionality into your Claude workflow. Each tool is exposed via the Model Context Protocol for seamless integration.",
+  "version": "1.0.0",
+  "created_at": "2025-06-26T15:44:14.309369",
+  "updated_at": "2025-06-26T15:44:14.309373",
+  "author": "automated_docstring_extractor",
+  "tags": [
+    "mcp",
+    "structured_agent",
+    "detailed"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": []
+}

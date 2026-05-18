@@ -1,0 +1,60 @@
+{
+    "marketing_launch": {
+        "name": "Marketing Launch",
+        "description": "Product launch or marketing campaign planning",
+        "default_seats": ["CMO", "CPO", "CCO", "CDO", "CRvO", "CFO"],
+        "trigger_phrases": ["marketing team", "marketing meeting", "launch plan",
+                            "campaign", "go-to-market", "product launch"]
+    },
+    "technical_review": {
+        "name": "Technical Review",
+        "description": "Architecture review, technical planning, system design",
+        "default_seats": ["CTO", "VPE", "CDS", "CRO", "CISO"],
+        "trigger_phrases": ["technical review", "architecture review", "tech team",
+                            "system design", "code review", "infrastructure"]
+    },
+    "product_planning": {
+        "name": "Product Planning",
+        "description": "Product strategy, feature planning, user research synthesis",
+        "default_seats": ["CPO", "CTO", "CMO", "CDO", "CXO"],
+        "trigger_phrases": ["product planning", "product team", "feature planning",
+                            "roadmap", "product strategy", "user research"]
+    },
+    "financial_review": {
+        "name": "Financial Review",
+        "description": "Budget planning, financial analysis, pricing decisions",
+        "default_seats": ["CFO", "CRO", "COO", "CSO"],
+        "trigger_phrases": ["financial review", "budget", "pricing", "revenue",
+                            "finance team", "financial planning"]
+    },
+    "security_audit": {
+        "name": "Security Audit",
+        "description": "Security review, compliance assessment, risk analysis",
+        "default_seats": ["CISO", "CTO", "VPE", "GC", "CRO"],
+        "trigger_phrases": ["security audit", "security review", "compliance",
+                            "security team", "vulnerability", "data privacy"]
+    },
+    "sales_strategy": {
+        "name": "Sales Strategy",
+        "description": "Sales planning, pipeline review, outreach strategy",
+        "default_seats": ["CRvO", "CMO", "CPO", "CFO", "CXO"],
+        "trigger_phrases": ["sales strategy", "sales team", "pipeline review",
+                            "outreach", "revenue strategy", "deals"]
+    },
+    "creative_review": {
+        "name": "Creative Review",
+        "description": "Design review, brand consistency, creative direction",
+        "default_seats": ["CCO", "CMO", "CPO", "CXO"],
+        "trigger_phrases": ["creative review", "design review", "brand review",
+                            "creative team", "UX review", "design direction"]
+    },
+    "full_board": {
+        "name": "Full Board Meeting",
+        "description": "All C-level executives for major decisions",
+        "default_seats": ["CTO", "CSO", "CRO", "CDO", "CMO", "CFO", "CPO",
+                          "COO", "CCO", "CHRO", "CISO", "CXO", "CRvO",
+                          "VPE", "CDS", "GC"],
+        "trigger_phrases": ["full board", "all hands", "everyone",
+                            "full team", "all executives"]
+    }
+}

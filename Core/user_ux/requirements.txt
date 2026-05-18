@@ -1,0 +1,8 @@
+flask==3.0.2
+flask-cors==4.0.0
+requests==2.31.0
+psutil==6.1.1
+PyQt6==6.5.0
+PyQt6-WebEngine==6.5.0
+PyQt6-Qt6==6.5.0
+PyQt6-sip==13.5.0 

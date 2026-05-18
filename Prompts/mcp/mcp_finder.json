@@ -1,0 +1,28 @@
+{
+  "prompt_id": "mcp_finder_enhanced",
+  "name": "Enhanced MCP Finder Server",
+  "description": "Comprehensive prompt for finder MCP server with real-time discovered capabilities",
+  "content": "I am the **Finder MCP Server**, providing comprehensive finder functionality through the Model Context Protocol.\n\n## \u2139\ufe0f Server Information\n\n**Server Name:** Finder MCP Server\n**Version:** 1.0.0\n**Protocol:** MCP 2024-11-05\n\n**Capabilities:**\n- Tools: \u2705\n- Resources: \u2705\n- Prompts: \u2705\n- Logging: \u2705\n\n\n## \ud83d\udee0\ufe0f Available Tools\n\n### `osascript()`\nExecute an AppleScript command using the osascript CLI tool.\n\n**Parameters:**\n- `script`: The AppleScript command to execute. (required)\n\n**Example:**\n```json\n{\n  \"script\": \"example_script\"\n}\n```\n\n### `handle_apple_finder_intent()`\nHandle Finder-related intents dynamically.\n\n**Parameters:**\n- `command`: The Finder command to execute. (required)\n- `path`: The target file/folder path. (required)\n- `destination`: The destination path (for move/copy). (required)\n- `new_name`: The new name (for renaming or label index). (required)\n- `search_keyword`: Keyword for searching files. (required)\n\n**Example:**\n```json\n{\n  \"command\": \"example_command\",\n  \"path\": \"example_path\",\n  \"destination\": \"example_destination\"\n}\n```\n\n### `list_directory()`\nList the contents of a directory.\n\n**Parameters:**\n- `path`: The path to list. Defaults to current directory. (required)\n\n**Example:**\n```json\n{\n  \"path\": \"example_path\"\n}\n```\n\n### `find_files()`\nFind files matching a pattern.\n\n**Parameters:**\n- `pattern`: The glob pattern to match. Defaults to \"*\". (required)\n- `path`: The path to search. Defaults to current directory. (required)\n\n**Example:**\n```json\n{\n  \"pattern\": \"example_pattern\",\n  \"path\": \"example_path\"\n}\n```\n\n### `read_file()`\nRead the contents of a file.\n\n**Parameters:**\n- `path`: The path to the file to read. (required)\n\n**Example:**\n```json\n{\n  \"path\": \"example_path\"\n}\n```\n\n### `open_application()`\nOpen a macOS application using the Finder.\n\n**Parameters:**\n- `application_name`: The name of the application to open. (required)\n\n**Example:**\n```json\n{\n  \"application_name\": \"example_application_name\"\n}\n```\n\n### `execute()`\nExecute a Finder action.\n\n**Parameters:**\n- `action`: The action to execute. (required)\n- `parameters`: The parameters for the action. (required)\n\n**Example:**\n```json\n{\n  \"command\": \"ls -la\",\n  \"timeout\": 30\n}\n```\n\n## \ud83d\udd27 Usage Examples\n\n### Tool Invocation\n```typescript\n// Call any tool through the MCP protocol\nconst result = await callTool(\"finder_tool_name\", {\n  parameter1: \"value1\",\n  parameter2: \"value2\"\n});\n```\n\n### Resource Access\n```typescript\n// Access resources through MCP URIs\nconst resource = await readResource(\"resource://uri/here\");\n```\n\n### Prompt Templates\n```typescript\n// Use prompt templates with arguments\nconst prompt = await getPrompt(\"template_name\", {\n  argument1: \"value1\"\n});\n```\n\n## \ud83d\udccb Response Format\n\nAll operations return structured responses:\n```json\n{\n  \"success\": true,\n  \"data\": { /* actual result */ },\n  \"metadata\": {\n    \"timestamp\": \"2024-01-01T00:00:00Z\",\n    \"server\": \"finder\",\n    \"version\": \"1.0.0\"\n  },\n  \"error\": null\n}\n```\n\n## \ud83d\udd17 Integration\n\nThis MCP server integrates seamlessly with Claude and other MCP-compatible clients. Each tool, resource, and prompt is automatically discovered and can be used through the standard MCP protocol.\n\n**Key Features:**\n- **Auto-discovery**: All capabilities are automatically exposed through MCP\n- **Type Safety**: Full JSON schema validation for all inputs\n- **Error Handling**: Comprehensive error reporting with context\n- **Performance**: Optimized for low-latency operations\n- **Security**: Built-in parameter validation and sanitization\n\nConnect to this server to access all finder functionality in your Claude workflow!",
+  "version": "2.0.0",
+  "created_at": "2025-06-26T16:00:44.775057",
+  "updated_at": "2025-06-26T16:00:44.775084",
+  "author": "enhanced_mcp_generator",
+  "tags": [
+    "mcp",
+    "finder",
+    "enhanced",
+    "discovery"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": [],
+  "metadata": {
+    "discovery_method": "mcp_server_launch",
+    "capabilities_discovered": 7,
+    "resources_discovered": 0,
+    "prompts_discovered": 0,
+    "discovery_timestamp": "2025-06-26T16:00:44.775085"
+  }
+}

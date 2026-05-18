@@ -1,0 +1,159 @@
+{
+  "_comment": "Canonical OpenClaw config for local-LLM serving via MLX. Includes all documented knobs we care about. Use as a reference when rebuilding from scratch or onboarding a new machine. NOT a drop-in replacement — your config has auth profiles, Telegram keys, etc. that this template omits.",
+
+  "auth": {
+    "profiles": {
+      "anthropic:default": {
+        "provider": "anthropic",
+        "mode": "api_key"
+      }
+    }
+  },
+
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "mlx": {
+        "baseUrl": "http://127.0.0.1:11502/v1",
+        "apiKey": "local",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "mlx-community/Qwen3.5-35B-A3B-4bit",
+            "name": "Qwen 3.5 35B (MLX Local)",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 131072,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+
+  "agents": {
+    "defaults": {
+      "contextTokens": 131072,
+      "bootstrapMaxChars": 20000,
+      "bootstrapTotalMaxChars": 150000,
+      "bootstrapPromptTruncationWarning": "always",
+
+      "model": {
+        "primary": "mlx/mlx-community/Qwen3.5-35B-A3B-4bit",
+        "fallbacks": []
+      },
+
+      "models": {
+        "anthropic/claude-sonnet-4-6": {
+          "params": { "cacheRetention": "short" }
+        },
+        "mlx/mlx-community/Qwen3.5-35B-A3B-4bit": {
+          "params": {
+            "think": false,
+            "chat_template_kwargs": { "enable_thinking": false }
+          }
+        }
+      },
+
+      "timeoutSeconds": 600,
+      "workspace": "/Users/timothywade/.openclaw/workspace",
+
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h"
+      },
+
+      "compaction": {
+        "mode": "default",
+        "reserveTokens": 20000,
+        "reserveTokensFloor": 20000,
+        "keepRecentTokens": 24000,
+        "identifierPolicy": "strict",
+        "postCompactionSections": [
+          "memory/short-term.md"
+        ],
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 10000,
+          "forceFlushTranscriptBytes": "200kb",
+          "prompt": "Before this session compacts, write to all three memory tiers plus vault. See current config for the full prompt — preserved there.",
+          "systemPrompt": "Session is about to compact. Write a 3-tier memory handoff."
+        }
+      },
+
+      "heartbeat": { "every": "4m" },
+      "maxConcurrent": 4,
+
+      "subagents": {
+        "maxConcurrent": 8,
+        "model": {
+          "primary": "mlx/mlx-community/Qwen3.5-35B-A3B-4bit"
+        }
+      }
+    }
+  },
+
+  "tools": {
+    "media": {
+      "audio": {
+        "enabled": true,
+        "maxBytes": 52428800,
+        "models": [
+          {
+            "type": "cli",
+            "command": "python3",
+            "args": [
+              "-c",
+              "import whisper; m=whisper.load_model('/Users/timothywade/jarvis/Core/models/small.pt'); print(m.transcribe('{{MediaPath}}', language='en', fp16=False)['text'])"
+            ],
+            "timeoutSeconds": 180
+          }
+        ],
+        "echoTranscript": true
+      }
+    }
+  },
+
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "bootstrap-extra-files": {
+          "enabled": true,
+          "paths": [
+            "AGENTS.md",
+            "MEMORY.md",
+            "TOOLS.md",
+            "JARVIS_CONTEXT.md",
+            "VAULT_CONTEXT.md",
+            "memory/short-term.md",
+            "memory/mistakes.md"
+          ]
+        }
+      }
+    }
+  },
+
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "/Users/timothywade/jarvis/.agents/skills"
+      ]
+    }
+  },
+
+  "plugins": {
+    "entries": {
+      "acpx": {
+        "enabled": true,
+        "config": {
+          "cwd": "/Users/timothywade/Jarvis",
+          "permissionMode": "approve-all",
+          "nonInteractivePermissions": "deny",
+          "timeoutSeconds": 300
+        }
+      }
+    }
+  }
+}

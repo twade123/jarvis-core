@@ -1,0 +1,68 @@
+{
+  "agent_id": "20731a2d-58d3-4324-b446-3647aaf3be91",
+  "agent_name": "DataAnalyst",
+  "agent_type": "specialist",
+  "module_name": "analytics",
+  "capabilities": [
+    "AgentCapability.DATA_ANALYSIS",
+    "AgentCapability.DATA_VISUALIZATION",
+    "AgentCapability.STATISTICAL_ANALYSIS"
+  ],
+  "created_at": 1742933758.047592,
+  "updated_at": 1742933758.047592,
+  "status": "active",
+  "metadata": {
+    "team_name": "data_team",
+    "model": "claude",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "data_visualization",
+          "description": "Create visualizations from data",
+          "parameters": {}
+        },
+        "strict": false
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "statistical_analysis",
+          "description": "Perform statistical analysis on data",
+          "parameters": {}
+        },
+        "strict": false
+      }
+    ],
+    "specialization": {
+      "domain": "Data Analysis and Visualization",
+      "expertise_level": 9,
+      "capabilities": [
+        "data_analysis",
+        "data_visualization",
+        "statistical_analysis"
+      ],
+      "tools": [
+        {
+          "name": "data_visualization",
+          "description": "Create visualizations from data",
+          "parameters": {},
+          "strict": false,
+          "required": []
+        },
+        {
+          "name": "statistical_analysis",
+          "description": "Perform statistical analysis on data",
+          "parameters": {},
+          "strict": false,
+          "required": []
+        }
+      ],
+      "knowledge_base": [
+        "Statistics",
+        "Data Visualization",
+        "Machine Learning"
+      ]
+    }
+  }
+}

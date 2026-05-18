@@ -1,0 +1,52 @@
+{
+  "agent_id": "9e0757dd-25cb-4f17-92c7-85a08b443da3",
+  "agent_name": "BasicAgent",
+  "agent_type": "generalist",
+  "module_name": "communication",
+  "capabilities": [
+    "AgentCapability.COMMUNICATION",
+    "AgentCapability.RESEARCH",
+    "AgentCapability.INFORMATION_SYNTHESIS"
+  ],
+  "created_at": 1742934138.6200671,
+  "updated_at": 1742934138.6200671,
+  "status": "active",
+  "metadata": {
+    "team_name": "research_team",
+    "model": "claude",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "web_search",
+          "description": "Search the web for real-time information",
+          "parameters": {}
+        },
+        "strict": false
+      }
+    ],
+    "specialization": {
+      "domain": "Communication and Research",
+      "expertise_level": 8,
+      "capabilities": [
+        "communication",
+        "research",
+        "information_synthesis"
+      ],
+      "tools": [
+        {
+          "name": "web_search",
+          "description": "Search the web for real-time information",
+          "parameters": {},
+          "strict": false,
+          "required": []
+        }
+      ],
+      "knowledge_base": [
+        "Communication Strategies",
+        "Research Methodologies",
+        "Information Analysis"
+      ]
+    }
+  }
+}

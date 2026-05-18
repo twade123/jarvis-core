@@ -1,0 +1,15 @@
+{
+    "mode": "development",
+    "backend_port": 5000,
+    "frontend_port": 3001,
+    "auto_restart": true,
+    "max_restart_attempts": 3,
+    "restart_cooldown": 5,
+    "allowed_paths": {
+        "read": ["*"],
+        "write": ["Core", "Data", "Handler"]
+    },
+    "window_width": 1200,
+    "window_height": 800,
+    "window_title": "Jarvis Desktop"
+}

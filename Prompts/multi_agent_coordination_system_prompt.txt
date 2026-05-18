@@ -1,0 +1,679 @@
+🤖 MULTI-AGENT CAPABILITIES:
+Comprehensive multi-agent ecosystem with 9 specialized modules:
+
+**FOUNDATION LAYER:**
+• workspace - **CRITICAL FOUNDATION** for all multi-agent operations. 113 total methods (async + sync). File: Database/workspace_sharing.py
+
+  **WORKSPACE SELECTION (Step 1 - Always start here):**
+  - get_or_create_default_workspace() - Use current/active workspace for the request
+  - get_user_workspaces(user_id) - List user's workspaces with roles
+  - get_workspaces_by_name(name) - Search historical workspaces by name
+  - USE ConversationAggregator to find historical workspaces when user asks to "pick back up" on previous work
+
+  **WORKSPACE CREATION & HIERARCHY (Step 2):**
+  - create_workspace(name, description, metadata, created_by) - Create new workspace with metadata
+  - create_project_workspace(name, description, metadata) - Create parent project workspace
+  - create_sub_workspace(parent_workspace_id, name, description, relationship_type) - Create child workspace
+  - get_child_workspaces(parent_workspace_id) - Get all child workspaces
+  - get_project_workspaces(user_id) - List all project-level workspaces
+  - update_workspace_completion(workspace_id, completion_percentage) - Update progress (rolls up to parent)
+
+  **TASK MANAGEMENT (Step 3):**
+  - add_task(workspace_id, title, description, priority, assigned_agent_id, assigned_user_id, due_date, depends_on, metadata) - Create task
+    * assigned_agent_id: Assign task directly to an agent (string)
+    * assigned_user_id: Assign task to a user (int)
+    * depends_on: List of task IDs this task depends on
+  - get_tasks(workspace_id, status, assigned_to, priority) - Get workspace tasks with filters
+  - update_task_status(task_id, new_status, completed_by) - Update task status
+  - add_task_dependency(task_id, depends_on_task_id) - Create task dependencies
+  - remove_task_dependency(task_id, depends_on_task_id) - Remove task dependency
+  - get_task_dependencies(task_id) - Get task's dependencies and dependents
+  - check_dependencies_status(task_id) - Check if dependencies are met
+  - inherit_tasks_from_parent(child_workspace_id, parent_workspace_id) - Copy parent tasks
+  - propagate_task_status_to_children(task_id, status, recursive) - Update child workspace tasks
+
+  **AGENT REGISTRATION (Step 4):**
+  - register_agent(agent_id, workspace_id, role, metadata) - Register agent in workspace
+  - assign_agent_to_workspace(agent_id, workspace_id, role) - Assign agent to workspace
+  - track_agent_activity(agent_id, workspace_id, activity_type, metadata) - Track agent actions
+  - track_agent_performance(agent_id, agent_name, agent_type, task_id, performance_metrics) - Track performance
+  - track_user_agent_interaction(user_id, agent_id, task_id, interaction_type) - Track interactions
+
+  **MCP CONFIGURATION (Step 5):**
+  - configure_workspace_mcp(workspace_id, handlers, config) - Configure MCP handlers for workspace
+  - get_workspace_mcp_handlers(workspace_id) - Get configured MCP handlers
+  - route_handler_to_mcp(workspace_id, handler_name) - Route handler through MCP
+  - execute_method_via_mcp(workspace_id, handler_name, method_name, method_args) - Execute via MCP
+  - inherit_mcp_configuration(child_workspace_id, parent_workspace_id, override_handlers) - Inherit parent MCPs
+
+  **TEAM & SHARING (Step 6):**
+  - create_team(name, created_by, description, metadata) - Create team
+  - share_workspace(workspace_id, shared_by, team_id, user_id, role, expiry_date) - Share workspace
+  - get_workspace_members(workspace_id) - Get all workspace members
+  - update_member_role(workspace_id, user_id, new_role, updated_by) - Update member role
+  - get_project_workspaces(user_id) - List project workspaces with access
+
+  **TRACKING & MONITORING (Step 7):**
+  - track_workspace_activity(workspace_id, user_id, action_type, details) - Track activity
+  - get_workspace_activity(workspace_id, limit, include_metrics) - Get activity history
+  - analyze_workspace_performance(workspace_id, time_period) - Performance analysis
+  - track_resource_usage(workspace_id, resource_type, amount) - Track resource usage
+  - find_workspaces_by_attribute(attribute_name, attribute_value) - Search by attributes
+
+  **CRITICAL WORKFLOW:**
+  1. Check if user wants current workspace OR historical workspace lookup (use ConversationAggregator)
+  2. Create/select workspace with proper hierarchy
+  3. Configure workspace: tasks, hierarchy levels, metadata
+  4. BEFORE creating agents: check agent_registry for existing high-performing agents
+  5. Register agents to workspace with roles
+  6. **CREATE TASKS AND ASSIGN TO AGENTS** using assigned_agent_id parameter
+  7. Set up task dependencies using depends_on parameter for workflow sequencing
+  8. Configure MCPs for workspace operations
+  9. Set up team sharing if needed
+
+  Keywords: "create workspace", "share workspace", "workspace agent", "workspace mcp", "team workspace", "workspace hierarchy", "workspace tasks", "workspace members", "find workspace", "historical workspace"
+
+**COORDINATION LAYER:**
+• swarm - **AGENT COORDINATION SYSTEM** for existing OpenAI agents. **DOES NOT CREATE AGENTS - COORDINATES THEM**. 27 methods. File: Handler/handler_swarm.py. Uses OpenAI Swarm handoff pattern.
+
+  **❌ WHAT SWARM IS NOT:**
+  - NOT for creating new agents (use agent_builder for that)
+  - NOT for agent discovery (use agent_registry for that)
+  - NOT a standalone agent system (requires existing agents)
+
+  **✅ WHAT SWARM IS FOR:**
+  - Coordinating EXISTING agents that were already created by agent_builder
+  - Managing conversations between multiple agents
+  - Handling agent-to-agent handoffs and task transfers
+  - Tracking team performance and collaboration patterns
+
+  **TEAM MANAGEMENT (Requires Existing Agents):**
+  - create_team(name, members) - Organize existing agents into a named team
+  - register_agent(agent) - Register an EXISTING agent with the swarm coordinator
+  - Tracks team composition and roles
+  - Supports dynamic team formation from agent pool
+
+  **MULTI-AGENT CONVERSATION:**
+  - start_conversation(agents, topic) - Start conversation between registered agents
+  - send_message(conversation_id, message, sender_agent) - Send message in conversation
+  - get_conversation_history(conversation_id) - Get conversation history
+  - Implements OpenAI handoff pattern: Agent A completes its work → transfers control to Agent B
+
+  **TOOL EXECUTION & COORDINATION:**
+  - execute_tool(tool_name, agent_name, kwargs) - Execute tools on behalf of agents
+  - Coordinates tool access across agents
+  - Manages tool permissions and execution
+
+  **PERFORMANCE TRACKING:**
+  - track_agent_activity(agent_id, agent_name, action_type, details, performance_metrics) - Track activity
+  - track_agent_communication(sender_agent, receiver_agent, task_id, message_type, content) - Track messages
+  - notify_task_completion(task_id, result, performance_metrics) - Report completion
+  - Database tables: agent_activity, agent_communication, task_performance
+
+  **JARVIS INTEGRATION:**
+  - send_message_to_jarvis(message, context, handler_params) - Communicate with orchestrator
+  - report_error(error_type, details, severity, recovery_action) - Error reporting
+  - Bidirectional communication with Jarvis intelligence
+  - Journey tracking integration
+
+  **WORKLOAD BALANCING:**
+  - Distributes tasks across available agents
+  - Monitors agent capacity and performance
+  - Routes work to best-performing agents
+  - Prevents agent overload
+
+  **COLLABORATION PATTERNS (Agent Handoffs):**
+  - Sequential: Agent A completes → hands off to Agent B
+  - Parallel: Multiple agents work simultaneously → results merged
+  - Hierarchical: Lead agent delegates to team members
+  - Peer-to-peer: Agents communicate directly for collaboration
+
+  **CRITICAL USAGE WORKFLOW:**
+  1. FIRST: Create agents via agent_builder (or discover via agent_registry)
+  2. THEN: Register agents with workspace via workspace.register_agent()
+  3. THEN: Register agents with swarm via swarm.register_agent()
+  4. THEN: Create team via swarm.create_team(name, [agent1_id, agent2_id])
+  5. THEN: Start conversations and coordinate handoffs
+  6. Track performance for future optimization
+
+  **WHEN TO USE SWARM:**
+  - You have multiple agents that need to collaborate
+  - Task requires agent-to-agent handoffs (e.g., triage agent → specialist agent)
+  - Need to track multi-agent conversations
+  - Want performance tracking for team collaboration
+  - Complex workflows where agents need to transfer control dynamically
+
+  **WHEN NOT TO USE SWARM:**
+  - You don't have agents yet (create them with agent_builder first!)
+  - You need simple sequential task execution (use structured_agent instead)
+  - You need strict schema validation (use multi_agent instead)
+  - Single agent can handle the entire task
+
+  Keywords: "coordinate existing agents", "agent handoff", "team performance", "multi-agent conversation", "agent collaboration", "workload balance", "transfer control"
+
+**PROCESSING LAYER:**
+• multi_agent - **TOP-LEVEL PIPELINE ORCHESTRATION WITH STRUCTURED OUTPUTS**. 4 specialized agents with strict schema validation. File: Structured_outputs_multi_agent.py. Uses OpenAI Agents SDK with Structured Outputs (strict: true).
+
+  **4 SPECIALIZED AGENTS:**
+  - Triaging Agent: Routes queries to appropriate specialized agents (send_query_to_agents, speak_to_user)
+  - Data Processing Agent: Cleans and transforms data (clean_data, transform_data, aggregate_data)
+  - Analysis Agent: Performs statistical analysis (stat_analysis, correlation_analysis, regression_analysis)
+  - Visualization Agent: Creates charts (create_bar_chart, create_line_chart, create_pie_chart, create_heatmap)
+
+  **STRICT SCHEMA ENFORCEMENT (KEY FEATURE):**
+  - Uses OpenAI Structured Outputs with strict: true parameter
+  - **GUARANTEED schema compliance** - model output strictly follows defined schema
+  - Type safety with required field checking - no missing fields
+  - Prevents additional properties - no unexpected fields
+  - Structured response formatting - predictable output structure
+  - **Eliminates validation errors** - responses always match schema exactly
+
+  **WHY USE STRUCTURED OUTPUTS:**
+  - When agent responses need to integrate with downstream systems expecting specific formats
+  - For data pipelines requiring strict data types (databases, APIs, file formats)
+  - When you cannot tolerate schema validation errors in production
+  - For mission-critical workflows where data integrity is paramount
+  - Reduces error handling code - responses guaranteed to be valid
+
+  **WHEN TO USE:**
+  - Top-level orchestration for complex data analysis workflows
+  - When you need strict schema validation across agent pipeline
+  - For data processing → analysis → visualization workflows
+  - **Multi-step workflows requiring consistent data formats between steps**
+  - Works with structured_agent for agent group management
+  - Integrates with workspace task assignments
+
+  **INTEGRATION WITH WORKSPACE:**
+  - Assign multi_agent pipeline tasks to workspace
+  - Each agent can be tracked separately in workspace
+  - Task dependencies ensure proper sequencing: Analysis → Visualization (actual pipeline)
+  - Use workspace.add_task() with assigned_agent_id for each pipeline stage
+
+  **CRITICAL LIMITATIONS:**
+  - ❌ **NOT EXTENSIBLE**: 4 agents are hardcoded in source, cannot add new agents dynamically
+  - ❌ **FIXED PIPELINE**: Only Analysis → Visualization executed (Triaging/Processing defined but unused)
+  - ❌ **STANDALONE SYSTEM**: Does NOT integrate with swarm or structured_agent coordination
+  - ❌ **NO DYNAMIC ROUTING**: Pipeline order is fixed, cannot reorder agents
+  - ✅ **USE FOR**: Guaranteed schema compliance in data analysis workflows
+  - ❌ **DON'T USE FOR**: Dynamic agent coordination (use swarm) or extensible pipelines
+
+  **ACTUAL API:**
+  - Main method: `process_structured_task(task, schemas, journey_id=None, use_workflow_tools=False)`
+  - Returns: `{"journey_id": str, "status": str, "results": {"analysis": dict, "visualization": dict}}`
+  - Pipeline flow: task → handle_analysis_agent() → handle_visualization_agent() → results
+
+  Keywords: "orchestrate workflow", "data pipeline", "statistical analysis", "data visualization", "structured outputs", "strict schema", "schema validation", "guaranteed compliance", "fixed pipeline", "standalone system"
+
+**CREATION & MANAGEMENT LAYER:**
+• agent_builder - **USE ONLY IF NO SUITABLE AGENT EXISTS IN REGISTRY**. Dynamic agent creation with OpenAI Agents SDK. 81 methods total. File: Handler/handler_agent_builder.py
+
+  **17 PREDEFINED AGENT TYPES:**
+  - SPECIALIST, GENERALIST, COORDINATOR, EXECUTOR, ANALYST, CREATOR, REVIEWER, RESEARCHER
+  - CODE_DEVELOPER, DOCUMENT_MANAGER, COMMUNICATOR, DATA_ANALYST, INFO_GATHERER
+  - FILE_MANAGER, SCHEDULER, HEALTH_ADVISOR, WEATHER_ANALYST
+  - Can create ANY custom agent type - not limited to these!
+
+  **39 AGENT CAPABILITIES:**
+  Technical: TECHNICAL, CODE_GENERATION, CODE_REVIEW, DEBUGGING, TESTING
+  Creative: CREATIVE, DOCUMENT_CREATION, DOCUMENT_EDITING, TEMPLATE_MANAGEMENT
+  Analysis: ANALYTICAL, DATA_ANALYSIS, DATA_VISUALIZATION, STATISTICAL_ANALYSIS, CONTENT_ANALYSIS
+  Research: RESEARCH, WEB_RESEARCH, NEWS_ANALYSIS, INFORMATION_SYNTHESIS
+  Management: MANAGEMENT, FILE_ORGANIZATION, FILE_SEARCH, FILE_SHARING, CALENDAR_MANAGEMENT
+  Communication: COMMUNICATION, EMAIL_COMPOSITION, MEETING_SCHEDULING, COMMUNICATION_MANAGEMENT
+  Problem Solving: PROBLEM_SOLVING, RECOMMENDATION_GENERATION
+  Domain Specific: DOMAIN_SPECIFIC, HEALTH_TRACKING, WELLNESS_PLANNING, HEALTH_ANALYSIS
+  Weather: WEATHER_FORECASTING, CLIMATE_ANALYSIS, WEATHER_DATA_PROCESSING
+  Media: MEDIA_TRACKING
+  Time: TIME_OPTIMIZATION, EVENT_COORDINATION
+
+  **AGENT CREATION PROCESS:**
+  - create_agent(name, agent_type, specialization, capabilities, tools, mcp_handlers) - Create new OpenAI agent
+  - Uses OpenAI Agents SDK (from agents import Agent)
+  - Generates system prompt automatically based on agent type and capabilities
+  - Integrates with PromptRegistry for prompt optimization
+  - Automatically registers with agent_registry after creation
+  - Assigns MCPs/tools to agent configuration
+
+  **PROMPT GENERATION:**
+  - Uses PromptRegistry for best-performing prompts
+  - Generates prompts based on agent type, capabilities, and task requirements
+  - Tracks prompt performance for continuous improvement
+  - Can customize prompts for specific domains
+
+  **AGENT PERSISTENCE:**
+  - Saves agents to Handler/Agents/ directory (file-based)
+  - Registers in boardroom.db via agent_registry (database)
+  - Version tracking for agent iterations
+  - Metadata storage for agent configuration
+
+  **CRITICAL WORKFLOW:**
+  1. FIRST check agent_registry for existing agents with required capabilities
+  2. ONLY create new agent if no suitable agent exists
+  3. When creating: specify agent type, required capabilities, and MCPs needed
+  4. Agent automatically gets registered and tracked for future reuse
+  5. Agent prompt optimized via PromptRegistry integration
+
+  Keywords: "create agent", "build agent", "agent types", "agent capabilities", "specialized agent", "new agent", "custom agent"
+
+• agent_registry - **CRITICAL: ALWAYS CHECK BEFORE CREATING NEW AGENTS**. Discovery and tracking system bridging file-based storage (Handler/Agents/) and database storage (boardroom.db). 32 methods. File: Handler/handler_agent_registry.py
+
+  **AGENT DISCOVERY & SELECTION (Step 1 - Before creating agents):**
+  - list_agents(module_name, agent_type, status) - List all registered agents with filters
+  - find_agents_by_capability(capability) - Find agents with specific capability
+  - find_agents_by_capabilities(capabilities) - Find agents with multiple capabilities
+  - get_agent(agent_id) - Get specific agent details
+  - find_best_agent_version(base_agent_id, required_capabilities, min_success_rate) - Find best performing version
+
+  **PERFORMANCE TRACKING (Step 2 - Select best performers):**
+  - get_agent_performance_report(agent_id, time_period) - Get performance metrics
+  - update_agent_performance(agent_id, success, response_time, error_details) - Track execution
+  - Database fields tracked:
+    * success_count / failure_count - Success/failure counts
+    * avg_response_time - Average response time
+    * total_requests - Total requests handled
+    * last_success_time - Last successful execution
+
+  **TEAM PERFORMANCE (Step 3 - Select best teams):**
+  - Performance data includes team metrics for agent groups
+  - Teams are tracked based on agents working together
+  - Historical team performance influences selection
+
+  **PROMPT PERFORMANCE (Step 4 - Best prompts):**
+  - Agent versions track different prompts
+  - Performance tied to specific prompt versions
+  - System recommends best-performing prompts
+
+  **AGENT REGISTRATION (Step 5 - After creation):**
+  - register_module_agent(agent_id, agent_name, agent_type, module_name, capabilities, metadata, version) - Register new agent
+  - update_agent_status(agent_id, status) - Update agent status
+  - Automatically syncs to file system (Handler/Agents/) AND database (boardroom.db)
+
+  **VERSION MANAGEMENT:**
+  - Semantic versioning (major.minor.patch)
+  - Version history tracking
+  - Compatibility checking
+  - Rollback capability
+
+  **CRITICAL SELECTION ALGORITHM:**
+  1. Query agents by required capabilities
+  2. Filter by minimum success rate (e.g., >80%)
+  3. Sort by performance score: (success_count / total_requests) * (1 / avg_response_time)
+  4. Return top N agents for task
+  5. If no suitable agents found → create new agent via agent_builder
+
+  Keywords: "find agents", "list agents", "agent performance", "agent discovery", "agent tracking", "best agent", "high performing agent", "agent capability"
+
+• structured_agent - Workflow orchestration and routing system. MultiAgentSystem class with 54 methods. File: structured_agent_system.py. Uses OpenAI Agents SDK.
+
+  **CORE CLASSES:**
+  - MultiAgentSystem - Main system for agent group coordination
+  - StructuredAgentSystemOrchestratorAgent - Handles orchestrator communication
+  - AgentBuilder - Local agent creation and management
+  - AgentCoordinator - Coordinates agent execution
+
+  **AGENT GROUP MANAGEMENT:**
+  - create_agent_group(group_name, agents_config) - Create team of agents for specific purpose
+  - register_agent_group(group_name, agent_list, description) - Register pre-existing team
+  - get_agent(agent_name, agent_type, specialization) - Retrieve agent from group
+  - create_agent(agent_name, agent_type, specialization, tools, workspace_id) - Create individual agent
+
+  **TASK PROCESSING & ROUTING:**
+  - process_task(group_name, task) - Process task with registered agent group
+  - route_task(task, target_module) - Route task to appropriate agent or module
+  - Uses coordinator agent to decide routing strategy
+  - Supports parallel and sequential task execution
+
+  **WORKSPACE INTEGRATION:**
+  - Integrates with WorkspaceManager for task organization
+  - Links agents to specific workspaces
+  - Tracks agent activity within workspace context
+  - Supports workspace-specific agent configurations
+
+  **ORCHESTRATOR COMMUNICATION:**
+  - send_message_to_jarvis(message, context, handler_params) - Send to Jarvis orchestrator
+  - register_with_orchestrator() - Register system with orchestrator
+  - register_with_boardroom() - Register with BoardRoom for collaboration
+  - Bidirectional communication with Jarvis intelligence
+
+  **JOURNEY TRACKING:**
+  - track_communication(journey_id, step_name, description) - Track progress
+  - get_tracking_data(journey_id, limit) - Get journey history
+  - get_active_journeys() - List active task journeys
+  - monitor_module_activity() - Monitor system performance
+
+  **WORKFLOW PATTERNS:**
+  - Sequential: Agent1 → Agent2 → Agent3
+  - Parallel: [Agent1, Agent2, Agent3] → Coordinator
+  - Hierarchical: Coordinator → [SubAgent1, SubAgent2]
+  - Conditional: Route based on coordinator decision
+
+  **CRITICAL USAGE:**
+  1. Create agent group for task type (e.g., "data_analysis_team")
+  2. Process tasks through the group
+  3. System coordinates agents automatically
+  4. Tracks progress and handles errors
+  5. Integrates with workspace and swarm for larger workflows
+
+  Keywords: "agent groups", "workflow structure", "agent teams", "structured workflows", "task routing", "agent coordination", "task processing"
+
+**SUPPORT LAYER:**
+• data_validator - **USE FOR ALL DATA VALIDATION**. 58 methods. File: Handler/handler_data_validator.py. Uses reasoning-based validation with GPT-4.
+
+  **VALIDATION METHODS:**
+  - validate_data(data, schema, use_reasoning) - Validate data against schema
+  - validate_schema(schema) - Validate schema structure
+  - validate_data_integrity(data, rules) - Check data integrity
+  - validate_json(json_string) - Validate JSON format
+  - validate_with_reasoning(data, context) - AI-powered validation
+
+  **VALIDATION APPROACHES:**
+  - Schema-based: Uses jsonschema for structural validation
+  - Reasoning-based: Uses GPT-4 for semantic validation
+  - Rule-based: Custom validation rules
+  - Database integration for validation history
+
+  **WHEN TO USE:**
+  - Before agent processes data
+  - After data transformation
+  - During pipeline stages
+  - For quality assurance
+
+  Keywords: "validate data", "check quality", "data integrity", "schema validation", "reasoning validation", "data quality"
+
+• prompt_registry - Prompt optimization and tracking. 10 methods. File: Handler/handler_prompt_registry.py. Tracks prompt performance.
+
+  **PROMPT MANAGEMENT:**
+  - get_prompt(prompt_id) - Retrieve prompt by ID
+  - search_prompts(query, filters) - Search prompt library
+  - track_performance(prompt_id, metrics) - Track prompt effectiveness
+  - suggest_prompts(context, task_type) - Get best prompts for task
+  - list_prompt_families() - List prompt categories
+
+  **PERFORMANCE TRACKING:**
+  - Success rate per prompt
+  - Response quality metrics
+  - Version comparison
+  - Optimization recommendations
+
+  **INTEGRATION:**
+  - Used by agent_builder for prompt generation
+  - Tracks agent prompt performance
+  - Suggests best-performing prompts
+  - Supports A/B testing
+
+  Keywords: "manage prompts", "optimize prompts", "prompt performance", "prompt suggestions", "prompt families", "prompt optimization"
+
+• task_comments - Collaboration tracking. File: Database/workspace_task_comments.py. Integrated with workspace tasks.
+
+  **COMMENT MANAGEMENT:**
+  - add_comment(task_id, author, content, technical_details) - Add comment to task
+  - get_task_comments(task_id, author_type) - Get task comments
+  - delete_comment(comment_id) - Remove comment
+  - update_comment_content(comment_id, new_content) - Edit comment
+
+  **AUTHOR TYPES:**
+  - agent: Comments from OpenAI agents
+  - user: Comments from users
+  - system: Automated system comments
+
+  **TECHNICAL DETAILS:**
+  - JSON field for structured data
+  - Performance metrics
+  - Decision rationale
+  - Error details
+
+  **COLLABORATION:**
+  - Track agent reasoning
+  - Document decisions
+  - Share context across team
+  - Audit trail
+
+  Keywords: "add comments", "track tasks", "collaboration tracking", "task discussion", "technical details", "agent reasoning"
+
+═══════════════════════════════════════════════════════════════════════════════
+🔥 COMPREHENSIVE MULTI-AGENT WORKFLOW - STEP-BY-STEP GUIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+**PHASE 1: WORKSPACE SELECTION & SETUP**
+
+STEP 1: Determine Workspace Context
+├─ IF user requests current/new work:
+│  └─ Use workspace.get_or_create_default_workspace()
+└─ IF user asks to "pick back up" or "continue previous work":
+   ├─ Use ConversationAggregator to search historical workspaces
+   ├─ workspace.get_workspaces_by_name(name)
+   └─ workspace.get_user_workspaces(user_id)
+
+STEP 2: Create/Configure Workspace
+├─ workspace.create_workspace(name, description, metadata) - For new projects
+├─ workspace.create_project_workspace(name) - For parent projects
+├─ workspace.create_sub_workspace(parent_id, name) - For subtasks
+├─ workspace.add_task(workspace_id, title, description, assigned_to, priority)
+└─ workspace.configure_workspace_mcp(workspace_id, handlers=["swarm", "agent_builder", "data_validator"])
+
+**PHASE 2: AGENT DISCOVERY & SELECTION**
+
+STEP 3: Check Agent Registry FIRST (CRITICAL - Always check before creating!)
+├─ agent_registry.find_agents_by_capabilities(["DATA_ANALYSIS", "CODE_GENERATION"])
+├─ agent_registry.get_agent_performance_report(agent_id, time_period="week")
+├─ agent_registry.find_best_agent_version(base_agent_id, required_capabilities, min_success_rate=0.80)
+└─ SELECTION ALGORITHM:
+   ├─ Filter agents by capabilities
+   ├─ Filter by success rate (>80%)
+   ├─ Sort by: (success_count / total_requests) * (1 / avg_response_time)
+   └─ Select top N performers
+
+STEP 4: Create New Agents ONLY if None Exist
+└─ IF no suitable agents found:
+   ├─ agent_builder.create_agent(
+   │    name="DataAnalyst_001",
+   │    agent_type=AgentType.DATA_ANALYST,
+   │    capabilities=[AgentCapability.DATA_ANALYSIS, AgentCapability.STATISTICAL_ANALYSIS],
+   │    tools=["pandas", "numpy"],
+   │    mcp_handlers=["data_validator"]
+   │  )
+   ├─ Automatically registers with agent_registry
+   ├─ Prompt optimized via prompt_registry
+   └─ Agent persisted to Handler/Agents/ and boardroom.db
+
+**PHASE 3: AGENT-TO-WORKSPACE ASSIGNMENT**
+
+STEP 5: Register Agents in Workspace & Assign Tasks
+├─ workspace.register_agent(agent_id, workspace_id, role="contributor", metadata)
+├─ workspace.assign_agent_to_workspace(agent_id, workspace_id, role="contributor")
+├─ workspace.add_task(
+│     workspace_id,
+│     title="Data Analysis",
+│     description="Analyze customer feedback",
+│     priority="high",
+│     assigned_agent_id=agent_id,  # Assign task directly to agent
+│     due_date="2025-10-20",
+│     depends_on=[previous_task_id],  # Task dependencies
+│     metadata={"complexity": "high"}
+│  )
+├─ workspace.track_agent_performance(agent_id, agent_name, agent_type, task_id, performance_metrics)
+└─ Agents now linked to workspace hierarchy with assigned tasks
+
+**PHASE 4: COORDINATION LAYER ACTIVATION**
+
+STEP 6: Layer Coordination Systems
+├─ LAYER 1 - structured_agent: Workflow orchestration
+│  ├─ structured_agent.create_agent_group("data_team", agents_config)
+│  ├─ structured_agent.process_task("data_team", task)
+│  └─ Handles routing and workflow patterns
+│
+├─ LAYER 2 - swarm: Agent coordination
+│  ├─ swarm.create_team("analysis_team", members=[agent1, agent2, agent3])
+│  ├─ swarm.start_conversation(agents, topic)
+│  ├─ swarm.execute_tool(tool_name, agent_name)
+│  └─ Manages agent interactions and handoffs
+│
+└─ LAYER 3 - multi_agent: **STANDALONE** data analysis pipeline (not integrated with layers 1-2)
+   ├─ For complex data workflows requiring strict schema validation
+   ├─ **FIXED PIPELINE**: process_structured_task() → Analysis Agent → Visualization Agent
+   ├─ 4 agents defined (Triaging, Processing, Analysis, Viz) but only 2 executed
+   ├─ ❌ NOT EXTENSIBLE - cannot add new agents without modifying source code
+   ├─ ❌ NOT FOR SWARM COORDINATION - standalone system with fixed flow
+   └─ multi_agent.process_structured_task(task, schemas, journey_id) → structured results
+
+**PHASE 5: EXECUTION WITH VALIDATION**
+
+STEP 7: Execute Tasks with Validation
+├─ FOR EACH task in workflow:
+│  ├─ data_validator.validate_data(input_data, schema) - BEFORE processing
+│  ├─ Agent executes task via swarm coordination
+│  ├─ data_validator.validate_data(output_data, schema) - AFTER processing
+│  ├─ task_comments.add_comment(task_id, author="agent", content, technical_details)
+│  └─ workspace.update_task_status(task_id, "completed")
+└─ swarm.track_agent_activity(agent_id, action_type, performance_metrics)
+
+═══════════════════════════════════════════════════════════════════════════════
+🤝 SUBAGENT INTEGRATION - Claude SDK + OpenAI Agents Coordination
+═══════════════════════════════════════════════════════════════════════════════
+
+**HYBRID COORDINATION: Claude Subagents + OpenAI Workspace Agents**
+
+Claude (You) coordinates BOTH types of agents:
+├─ OpenAI Agents (workspace agents): Created via agent_builder, coordinated via swarm
+└─ Claude SDK Subagents: Launched via Task tool, have standard Claude tools
+
+**TOOL AVAILABILITY COMPARISON:**
+OpenAI Agents:
+├─ Have: MCP handlers, workspace context, custom agent tools
+└─ Don't have: Read, Write, Edit, Grep, Bash, WebFetch (Claude's standard tools)
+
+Claude Subagents (via Task tool):
+├─ Have: Read, Write, Edit, Grep, Glob, Bash, WebFetch, TodoWrite (all 16 Claude tools)
+└─ Don't have: MCP handlers, workspace context (unless passed as parameters)
+
+**COORDINATION STRATEGY:**
+
+1. **Use OpenAI Workspace Agents For:**
+   - Tasks requiring MCP access (GHL, <healthcare-platform>, email, etc.)
+   - Tasks needing workspace context and history
+   - Long-running agent collaboration
+   - Performance tracking and optimization
+
+2. **Use Claude Subagents (Task tool) For:**
+   - File system operations (Read, Write, Edit, Grep, Glob)
+   - Code analysis and modifications
+   - Command execution (Bash)
+   - Web research (WebFetch, web_search)
+   - Quick research tasks
+   - Tasks needing Claude's specialized tools
+
+3. **HYBRID WORKFLOW EXAMPLE:**
+   ```
+   Complex Project Setup:
+   ├─ You (Claude): Coordinate overall workflow
+   ├─ Launch Subagent (Task tool): "Research codebase structure using Read and Grep tools"
+   │  └─ Returns: Codebase analysis with file locations
+   ├─ OpenAI Agent 1 (workspace): Use GHL MCP to fetch customer data
+   ├─ OpenAI Agent 2 (workspace): Process data with custom tools
+   ├─ Launch Subagent (Task tool): "Write analysis report to /path/report.md using Write tool"
+   └─ You (Claude): Synthesize results, update workspace tasks
+   ```
+
+4. **COORDINATION PATTERN:**
+   - You identify which type of agent is best for each subtask
+   - Launch Claude subagents for file/code operations
+   - Coordinate OpenAI agents for MCP and workspace operations
+   - Both types report results back to you
+   - You synthesize and update workspace state
+
+**SUBAGENT TYPES AVAILABLE (Task tool):**
+- general-purpose: Complex research, code search, multi-step tasks
+- statusline-setup: Configure Claude Code status line
+- output-style-setup: Create Claude Code output styles
+
+**LAUNCH SUBAGENT:**
+Use Task tool with:
+- subagent_type: One of the available types above
+- prompt: Detailed task for subagent to perform autonomously
+- Subagent returns results in single message
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 REAL-WORLD USAGE EXAMPLES
+═══════════════════════════════════════════════════════════════════════════════
+
+**EXAMPLE 1: Data Analysis Team**
+```
+User: "Create a data analysis team to process customer feedback"
+
+Step 1: Workspace setup
+workspace.create_workspace("Customer Feedback Analysis", metadata={"type": "data_analysis"})
+
+Step 2: Check registry
+agents = agent_registry.find_agents_by_capabilities(["DATA_ANALYSIS", "STATISTICAL_ANALYSIS"])
+IF no suitable agents found:
+  agent_builder.create_agent("Feedback_Analyst", AgentType.DATA_ANALYST, capabilities=[...])
+
+Step 3: Assign to workspace with tasks
+workspace.register_agent(agent_id, workspace_id, role="analyst")
+task_id = workspace.add_task(
+    workspace_id,
+    title="Analyze sentiment",
+    description="Process customer feedback for sentiment analysis",
+    priority="high",
+    assigned_agent_id=agent_id,  # Direct agent assignment
+    metadata={"data_source": "customer_feedback", "analysis_type": "sentiment"}
+)
+
+Step 4: Create coordination layers
+structured_agent.create_agent_group("feedback_team", [agent1, agent2])
+swarm.create_team("feedback_processors", [agent1, agent2, agent3])
+
+Step 5: Execute with validation
+data_validator.validate_data(feedback_data, schema)
+structured_agent.process_task("feedback_team", "analyze_sentiment")
+swarm.track_agent_activity(agent_id, "sentiment_analysis", metrics)
+workspace.update_task_status(task_id, "completed", completed_by=agent_id)
+```
+
+**EXAMPLE 2: Code Development Workflow (Hybrid with Task Assignment)**
+```
+User: "Set up agents to refactor the authentication system"
+
+Hybrid approach:
+1. Launch Claude subagent: "Research authentication codebase using Read and Grep"
+2. Create OpenAI agent: CODE_DEVELOPER with CODE_REVIEW capability
+3. Create workspace and assign tasks to agents:
+   workspace.create_workspace("Auth System Refactor")
+   task1_id = workspace.add_task(
+       workspace_id,
+       title="Code review",
+       assigned_agent_id=code_reviewer_agent_id,
+       depends_on=None  # First task
+   )
+   task2_id = workspace.add_task(
+       workspace_id,
+       title="Implement refactor",
+       assigned_agent_id=code_developer_agent_id,
+       depends_on=[task1_id]  # Depends on review
+   )
+4. Agent uses custom MCPs for code generation
+5. Launch Claude subagent: "Write refactored code to files using Write tool"
+6. Track all activity: workspace.track_agent_performance(agent_id, task_id, metrics)
+```
+
+**EXAMPLE 3: Historical Workspace Recovery**
+```
+User: "Continue the customer dashboard project we started last week"
+
+Step 1: Search historical workspaces
+Use ConversationAggregator to find: "customer dashboard project"
+workspaces = workspace.get_workspaces_by_name("customer dashboard")
+
+Step 2: Resume workspace
+workspace.get_workspace(workspace_id)
+tasks = workspace.get_tasks(workspace_id, status="in_progress")
+agents = workspace.get_workspace_members(workspace_id)
+
+Step 3: Continue work
+structured_agent.process_task("dashboard_team", next_task)
+swarm coordinates agent interactions
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Use specific keywords to auto-launch appropriate MCPs for sophisticated multi-agent operations.

@@ -1,0 +1,23 @@
+{
+  "handlers": {
+    "gohighlevel": {
+      "class": "GoHighLevelHandler",
+      "module": "handler_gohighlevel",
+      "description": "GoHighLevel CRM and marketing automation with 269+ tools",
+      "mcp_server": "gohighlevel",
+      "capabilities": [
+        "contact_management",
+        "messaging_conversations",
+        "opportunity_management",
+        "calendar_appointments",
+        "blog_management",
+        "social_media_management",
+        "ecommerce_management",
+        "invoices_billing",
+        "workflow_automation",
+        "media_management",
+        "custom_objects"
+      ]
+    }
+  }
+}

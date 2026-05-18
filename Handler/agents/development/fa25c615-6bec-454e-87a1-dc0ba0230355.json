@@ -1,0 +1,68 @@
+{
+  "agent_id": "fa25c615-6bec-454e-87a1-dc0ba0230355",
+  "agent_name": "CodeExpert",
+  "agent_type": "specialist",
+  "module_name": "development",
+  "capabilities": [
+    "AgentCapability.CODE_GENERATION",
+    "AgentCapability.CODE_REVIEW",
+    "AgentCapability.DEBUGGING"
+  ],
+  "created_at": 1742933593.665719,
+  "updated_at": 1742933593.665719,
+  "status": "active",
+  "metadata": {
+    "team_name": "dev_team",
+    "model": "claude",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "code_analysis",
+          "description": "Analyze code for patterns and potential issues",
+          "parameters": {}
+        },
+        "strict": false
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "test_generation",
+          "description": "Generate test cases for code",
+          "parameters": {}
+        },
+        "strict": false
+      }
+    ],
+    "specialization": {
+      "domain": "Software Development",
+      "expertise_level": 9,
+      "capabilities": [
+        "code_generation",
+        "code_review",
+        "debugging"
+      ],
+      "tools": [
+        {
+          "name": "code_analysis",
+          "description": "Analyze code for patterns and potential issues",
+          "parameters": {},
+          "strict": false,
+          "required": []
+        },
+        {
+          "name": "test_generation",
+          "description": "Generate test cases for code",
+          "parameters": {},
+          "strict": false,
+          "required": []
+        }
+      ],
+      "knowledge_base": [
+        "Software Engineering",
+        "Best Practices",
+        "Design Patterns"
+      ]
+    }
+  }
+}

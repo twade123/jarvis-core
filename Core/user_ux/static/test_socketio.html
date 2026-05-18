@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Connection Test</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .card {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        #log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket.IO Connection Test</h1>
+    
+    <div class="card">
+        <h2>Server Information</h2>
+        <div id="serverInfo"></div>
+    </div>
+    
+    <div class="card">
+        <h2>Connection Status</h2>
+        <div id="connectionStatus" class="status">Initializing...</div>
+        <button id="connectBtn">Connect</button>
+        <button id="disconnectBtn">Disconnect</button>
+    </div>
+    
+    <div class="card">
+        <h2>Test Actions</h2>
+        <button id="pingBtn">Send Ping</button>
+        <button id="statusBtn">Get Status</button>
+    </div>
+    
+    <div class="card">
+        <h2>Event Log</h2>
+        <div id="log"></div>
+    </div>
+
+    <!-- Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const serverInfoEl = document.getElementById('serverInfo');
+        const statusEl = document.getElementById('connectionStatus');
+        const logEl = document.getElementById('log');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const pingBtn = document.getElementById('pingBtn');
+        const statusBtn = document.getElementById('statusBtn');
+        
+        // Socket.IO connection
+        let socket = null;
+        let socketConnected = false;
+        
+        // Configuration
+        const API_URL = window.location.origin;
+        
+        // Utility functions
+        function logMessage(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logItem = document.createElement('div');
+            logItem.className = `status ${type}`;
+            logItem.innerHTML = `<strong>${timestamp}</strong>: ${message}`;
+            logEl.prepend(logItem);
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function updateStatus(message, type = 'info') {
+            statusEl.className = `status ${type}`;
+            statusEl.innerHTML = message;
+        }
+        
+        function displayObjectAsJson(obj) {
+            const pre = document.createElement('pre');
+            pre.textContent = JSON.stringify(obj, null, 2);
+            return pre;
+        }
+        
+        // Socket.IO connection initialization
+        function initSocketConnection() {
+            logMessage(`Initializing Socket.IO connection to ${API_URL}`, 'info');
+            updateStatus('Connecting...', 'warning');
+            
+            try {
+                // Create socket connection with parameters compatible with python-socketio
+                logMessage(`Attempting to connect to: ${API_URL}`, 'info');
+                
+                // Create socket with correct client version and compatibility options
+                socket = io(API_URL, {
+                    transports: ['websocket', 'polling'], // Try websocket first, then polling
+                    upgrade: true,                        // Allow transport upgrade
+                    rememberUpgrade: true,                // Remember successful websocket connections
+                    path: '/socket.io',                   // Standard Socket.IO path
+                    reconnection: true,                   // Enable reconnection
+                    reconnectionAttempts: 5,              // Number of reconnection attempts
+                    reconnectionDelay: 1000,              // Start with a 1 second delay
+                    reconnectionDelayMax: 5000,           // Maximum 5 seconds delay between attempts
+                    timeout: 20000                        // Timeout in milliseconds
+                });
+                
+                // Connection established
+                socket.on('connect', function() {
+                    logMessage('Socket connection SUCCESSFUL ✅', 'success');
+                    socketConnected = true;
+                    updateStatus('Connected to server', 'success');
+                    
+                    // Log connection details
+                    const connectionDetails = {
+                        id: socket.id,
+                        connected: socket.connected,
+                        transport: socket.io.engine.transport.name,
+                        url: API_URL
+                    };
+                    logMessage(`Connection details: ${JSON.stringify(connectionDetails)}`, 'info');
+                });
+                
+                // Connection error
+                socket.on('connect_error', function(error) {
+                    logMessage(`Socket connect error: ${error.message}`, 'error');
+                    socketConnected = false;
+                    updateStatus(`Connection error: ${error.message}`, 'error');
+                });
+                
+                // Disconnection
+                socket.on('disconnect', function() {
+                    logMessage('Socket disconnected', 'error');
+                    socketConnected = false;
+                    updateStatus('Disconnected from server', 'error');
+                });
+                
+                // Server confirms connection
+                socket.on('connection_confirmed', function(data) {
+                    logMessage('Server confirmed connection', 'success');
+                    logMessage(`Server data: ${JSON.stringify(data)}`, 'info');
+                    
+                    // Update server info
+                    serverInfoEl.innerHTML = '';
+                    serverInfoEl.appendChild(displayObjectAsJson(data));
+                });
+                
+                // Connection status from server
+                socket.on('connection_status', function(data) {
+                    logMessage(`Received connection status: ${data.status}`, 'info');
+                    logMessage(`Status data: ${JSON.stringify(data)}`, 'info');
+                });
+                
+                // Server status
+                socket.on('server_status', function(data) {
+                    logMessage('Received server status', 'info');
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'status info';
+                    statusDiv.appendChild(displayObjectAsJson(data));
+                    logEl.prepend(statusDiv);
+                });
+                
+                // Generic message handler
+                socket.on('message', function(data) {
+                    logMessage(`Received message: ${JSON.stringify(data)}`, 'info');
+                });
+                
+                // Ping response
+                socket.on('pong', function(data) {
+                    logMessage(`Received pong: ${JSON.stringify(data)}`, 'success');
+                });
+                
+                return socket;
+            } catch (error) {
+                logMessage(`Error initializing socket: ${error.message}`, 'error');
+                updateStatus(`Connection initialization error: ${error.message}`, 'error');
+                return null;
+            }
+        }
+        
+        // Event handlers
+        connectBtn.addEventListener('click', function() {
+            if (socket && socketConnected) {
+                logMessage('Already connected', 'warning');
+                return;
+            }
+            
+            // Disconnect existing socket if any
+            if (socket) {
+                socket.disconnect();
+            }
+            
+            // Initialize new connection
+            socket = initSocketConnection();
+        });
+        
+        disconnectBtn.addEventListener('click', function() {
+            if (!socket || !socketConnected) {
+                logMessage('Not connected', 'warning');
+                return;
+            }
+            
+            socket.disconnect();
+            updateStatus('Manually disconnected', 'warning');
+        });
+        
+        pingBtn.addEventListener('click', function() {
+            if (!socket || !socketConnected) {
+                logMessage('Not connected - cannot send ping', 'error');
+                return;
+            }
+            
+            logMessage('Sending ping to server', 'info');
+            socket.emit('ping', {
+                timestamp: Date.now(),
+                client_id: `test_client_${Date.now()}`
+            });
+        });
+        
+        statusBtn.addEventListener('click', function() {
+            if (!socket || !socketConnected) {
+                logMessage('Not connected - cannot get status', 'error');
+                return;
+            }
+            
+            logMessage('Requesting server status', 'info');
+            socket.emit('get_status', {
+                timestamp: Date.now()
+            });
+        });
+        
+        // Initialize connection on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateStatus('Ready to connect', 'info');
+            
+            // Automatically connect if specified in URL
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('autoconnect') === 'true') {
+                setTimeout(() => {
+                    connectBtn.click();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

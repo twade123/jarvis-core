@@ -1,0 +1,134 @@
+# ── Secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+API/
+*credentials*
+*oauth_token*
+
+# ── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+venv/
+.venv/
+
+# ── macOS / IDE ─────────────────────────────────────────────────
+.DS_Store
+.cursor/
+.vscode/
+.idea/
+
+# ── Databases (runtime data, never commit) ──────────────────────
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ── Logs ────────────────────────────────────────────────────────
+*.log
+logs/
+Logs/
+debug_logs/
+debug_todos/
+claude_todos/
+
+# ── Backups (massive in this codebase) ──────────────────────────
+*.backup
+*.backup_*
+*.bak
+*.bak_*
+*.bak.*
+*.bak2
+*.old
+*.orig
+*.disabled
+*.clean
+*.patch
+*_backup_*
+backup.py
+backups/
+db_backups/
+migration_backups/
+reconciliation_backups/
+
+# ── Archives (historical dev phases) ────────────────────────────
+archive/
+archives/
+all_md_plans/
+
+# ── Model weights (publish on HuggingFace, not git) ─────────────
+*.safetensors
+*.gguf
+*.bin
+*.pt
+*.pth
+*.onnx
+models/
+Models/
+adapters/
+
+# ── Client / domain-specific (separate concerns) ────────────────
+Forex Trading Team/
+Smart Gold*/
+rmbbhealth*/
+RMBB*/
+Cell Products*/
+Healthie/
+
+# ── Third-party integration MCPs (contain credentials) ──────────
+gohighlevel_mcp/
+google_workspace_mcp/
+google_ads_mcp/
+meta_ads_mcp/
+meta_business_sdk_mcp/
+aws_mcp/
+canva_mcp/
+github_mcp/
+
+# ── Conversation data (real chats, sensitive) ───────────────────
+boardroom_conversations.json
+*_conversations.json
+boardroom_cot_test*.txt
+boardroom_available.txt
+
+# ── Stray binaries / installers ─────────────────────────────────
+AWSCLIV2.pkg
+*.dmg
+*.pkg
+*.tar.gz
+*.zip
+
+# ── Audio / model binaries ──────────────────────────────────────
+Audio/
+*.wav
+*.mp3
+*.m4a
+
+# ── Conversation pointer index (regeneratable) ──────────────────
+conversation_pointer_index.db*
+
+# ── Dev HTML mockups ────────────────────────────────────────────
+*_demo.html
+*_real_data.html
+*_visualization*.html
+
+# ── Node ────────────────────────────────────────────────────────
+node_modules/
+
+# ── Misc generated ──────────────────────────────────────────────
+outputs/
+generated/
+*.tmp

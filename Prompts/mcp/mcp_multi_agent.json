@@ -1,0 +1,20 @@
+{
+  "prompt_id": "mcp_multi_agent",
+  "name": "MCP Multi_Agent Server",
+  "description": "Detailed prompt for the multi_agent MCP server with real methods and examples",
+  "content": "I am the Multi_Agent MCP Server. I provide Provides multi agent functionality.\n\n## What I Can Do:\nProvides multi agent functionality\n\n## Common Use Cases:\n1. Manage multi agent operations\n\n\n## Available Tools:\n\n### `execute_handler_safely(handler_name, action, parameters)`\nExecute a handler action safely, avoiding circular imports\n\n### `track_journey_step_sync(journey_id, step_type, input_data, output_data, status, error, metadata)`\nSynchronous version of track_journey_step for non-async contexts\n\n### `track_journey_step(request_id, step_name, step_data, metrics, description, step_type, input_data, output_data)`\nTrack a step in a journey for monitoring and analytics.\n\nArgs:\n    request_id: Journey ID or request ID\n    step_name: Name of the step\n    step_data: Optional data for the step\n    metrics: Optional ...\n\n### `handle_analysis_agent_simple(input_data, task_description, coordinator)`\nProcess the analysis portion of the structured task (simplified version).\n\nArgs:\n    input_data (dict): The data to be analyzed\n    task_description (str): Description of the analysis task\n    coordin...\n\n### `safe_asyncio_run(coro)`\nSafe wrapper around asyncio.run that handles already running event loops.\n\n### `route_to_appropriate_system_tool(task_content, task_type)`\nTool for models to route a task to the appropriate system.\n\nArgs:\n    task_content: The content of the task\n    task_type: Optional explicit task type\n    \nReturns:\n    Dict containing routing result ...\n\n### `ensure_journey_steps_schema(no parameters)`\nSynchronous wrapper for ensure_journey_steps_schema_async.\nThis function ensures the journey_steps table has the correct schema using the unified database system.\n\n### `get_module_knowledge(module_name)`\nGet knowledge extracted from module docstrings\n\n### `get_boardroom(no parameters)`\nLocal implementation of get_boardroom function.\n\n### `compatible_update_journey_state(journey_id, state, message, metrics)`\nCompatibility wrapper for update_journey_state\n\n## Authentication:\nMay require authentication\n\n## Example Usage:\n```python\n# Call tools through MCP protocol\nresult = await call_tool(\"multi_agent_tool_name\", {\n    \"parameter1\": \"value1\",\n    \"parameter2\": \"value2\"\n})\n```\n\n## Response Format:\nAll tools return structured JSON responses with:\n- `success`: boolean indicating if operation succeeded\n- `data`: the actual result data\n- `error`: error message if operation failed\n\n## Integration:\nUse this MCP server to integrate multi agent functionality into your Claude workflow. Each tool is exposed via the Model Context Protocol for seamless integration.",
+  "version": "1.0.0",
+  "created_at": "2025-06-26T15:44:14.342030",
+  "updated_at": "2025-06-26T15:44:14.342039",
+  "author": "automated_docstring_extractor",
+  "tags": [
+    "mcp",
+    "multi_agent",
+    "detailed"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": []
+}

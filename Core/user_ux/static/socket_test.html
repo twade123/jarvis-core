@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        #event-log {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .connected {
+            background-color: #dff0d8;
+            border-left: 5px solid #3c763d;
+        }
+        .disconnected {
+            background-color: #f2dede;
+            border-left: 5px solid #a94442;
+        }
+        .event-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .event-entry.message-event {
+            background-color: #e8f5e9;
+        }
+        .event-entry.boardroom-event {
+            background-color: #e1f5fe;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Test Page</h1>
+    
+    <div id="connection-status" class="status disconnected">Not connected</div>
+    
+    <div>
+        <button id="connect-btn">Connect</button>
+        <button id="disconnect-btn">Disconnect</button>
+        <button id="clear-log-btn">Clear Log</button>
+    </div>
+    
+    <h2>Test Events</h2>
+    <div>
+        <button id="test-message-btn">Test Message</button>
+        <button id="test-boardroom-btn">Test Boardroom</button>
+        <button id="test-plan-btn">Test Plan</button>
+        <button id="test-feedback-btn">Test Feedback</button>
+    </div>
+    
+    <h2>Conversation Management</h2>
+    <div>
+        <button id="create-conversation-btn">Create Conversation</button>
+        <input type="text" id="conversation-id-input" placeholder="Conversation ID">
+        <button id="select-conversation-btn">Select Conversation</button>
+        <button id="load-conversation-btn">Load Messages</button>
+    </div>
+    
+    <h2>Send Message</h2>
+    <div class="message-box">
+        <input type="text" id="message-input" placeholder="Type a message...">
+        <button id="send-btn">Send</button>
+    </div>
+    
+    <h2>Event Log</h2>
+    <div id="event-log"></div>
+    
+    <script>
+        // DOM elements
+        const connectionStatus = document.getElementById('connection-status');
+        const eventLog = document.getElementById('event-log');
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const testMessageBtn = document.getElementById('test-message-btn');
+        const testBoardroomBtn = document.getElementById('test-boardroom-btn');
+        const clearLogBtn = document.getElementById('clear-log-btn');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        
+        // Socket.IO connection
+        let socket = null;
+        
+        // Log an event
+        function logEvent(eventType, data, className = '') {
+            const entry = document.createElement('div');
+            entry.className = `event-entry ${className}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            
+            // Format the data as JSON with indentation
+            const formattedData = data ? JSON.stringify(data, null, 2) : 'No data';
+            
+            entry.innerHTML = `
+                <strong>[${timestamp}] ${eventType}</strong>
+                <pre>${formattedData}</pre>
+            `;
+            
+            eventLog.prepend(entry);
+        }
+        
+        // Connect to Socket.IO
+        function connect() {
+            // Use the same host as the page
+            const host = window.location.hostname;
+            const port = window.location.port;
+            const url = `${window.location.protocol}//${host}:${port}`;
+            
+            socket = io(url);
+            
+            // Connection events
+            socket.on('connect', () => {
+                connectionStatus.textContent = `Connected (ID: ${socket.id})`;
+                connectionStatus.className = 'status connected';
+                logEvent('Connected', { socketId: socket.id });
+            });
+            
+            socket.on('disconnect', (reason) => {
+                connectionStatus.textContent = `Disconnected: ${reason}`;
+                connectionStatus.className = 'status disconnected';
+                logEvent('Disconnected', { reason });
+            });
+            
+            socket.on('connect_error', (error) => {
+                connectionStatus.textContent = `Connection Error: ${error.message}`;
+                connectionStatus.className = 'status disconnected';
+                logEvent('Connection Error', { message: error.message });
+            });
+            
+            // Message events
+            socket.on('message', (data) => {
+                logEvent('message', data, 'message-event');
+            });
+            
+            socket.on('message_received', (data) => {
+                logEvent('message_received', data);
+            });
+            
+            // Boardroom events
+            socket.on('boardroom_update', (data) => {
+                logEvent('boardroom_update', data, 'boardroom-event');
+                
+                // Detect message type and apply appropriate styling
+                let className = 'boardroom-event';
+                let roleType = '';
+                
+                if (data && typeof data === 'object') {
+                    if (data.role) {
+                        roleType = data.role.toLowerCase();
+                        if (['claude', 'gpt', 'trevor', 'system', 'user'].includes(roleType)) {
+                            className += ' ' + roleType + '-message';
+                        }
+                    }
+                    
+                    if (data.type === 'plan' || data.is_plan) {
+                        className += ' plan-message';
+                    }
+                    
+                    if (data.type === 'feedback' || data.is_feedback) {
+                        className += ' feedback-message';
+                    }
+                }
+                
+                // Add additional entry with more details
+                const entry = document.createElement('div');
+                entry.className = className;
+                
+                let content = '';
+                if (typeof data === 'object') {
+                    content = data.content || data.message || data.text || JSON.stringify(data);
+                } else {
+                    content = data;
+                }
+                
+                entry.innerHTML = `
+                    <strong>[BOARDROOM][${roleType || 'unknown'}]</strong>
+                    <div>${content}</div>
+                `;
+                
+                eventLog.prepend(entry);
+            });
+            
+            socket.on('boardroom_feedback', (data) => {
+                logEvent('boardroom_feedback', data, 'boardroom-event feedback-message');
+            });
+            
+            socket.on('boardroom_plan', (data) => {
+                logEvent('boardroom_plan', data, 'boardroom-event plan-message');
+            });
+            
+            socket.on('boardroom_status', (data) => {
+                logEvent('boardroom_status', data, 'boardroom-event status-message');
+            });
+            
+            socket.on('boardroom_conversation_update', (data) => {
+                logEvent('boardroom_conversation_update', data, 'boardroom-event conversation-message');
+            });
+            
+            // Other events
+            socket.onAny((eventName, ...args) => {
+                if (!['connect', 'disconnect', 'connect_error', 'message', 'message_received', 
+                     'boardroom_update', 'boardroom_feedback', 'boardroom_plan',
+                     'boardroom_status', 'boardroom_conversation_update'].includes(eventName)) {
+                    logEvent(eventName, args[0]);
+                }
+            });
+        }
+        
+        // Disconnect from Socket.IO
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                connectionStatus.textContent = 'Manually Disconnected';
+                connectionStatus.className = 'status disconnected';
+            }
+        }
+        
+        // Send a test message event
+        function sendTestMessage() {
+            if (!socket) {
+                alert('Please connect first');
+                return;
+            }
+            
+            const testMessage = {
+                type: 'test',
+                content: 'This is a test message',
+                timestamp: Date.now()
+            };
+            
+            socket.emit('message', testMessage);
+            logEvent('Sent message event', testMessage);
+        }
+        
+        // Send a test boardroom event
+        function sendTestBoardroom() {
+            if (!socket) {
+                alert('Please connect first');
+                return;
+            }
+            
+            // Test multiple role types
+            const roleTypes = ['claude', 'gpt', 'trevor', 'system', 'user'];
+            const role = roleTypes[Math.floor(Math.random() * roleTypes.length)];
+            
+            const testEvent = {
+                type: 'boardroom_update',
+                role: role,
+                content: `[${role.toUpperCase()} TURN 1] This is a test boardroom message from ${role}`,
+                timestamp: Date.now(),
+                is_boardroom: true
+            };
+            
+            socket.emit('boardroom_update', testEvent);
+            logEvent('Sent boardroom_update event', testEvent);
+        }
+        
+        // Send a test plan
+        function sendTestPlan() {
+            if (!socket) {
+                alert('Please connect first');
+                return;
+            }
+            
+            const testPlan = {
+                type: 'plan',
+                title: 'Test Execution Plan',
+                plan: '1. First step of the plan\n2. Second step of the plan\n3. Final step of the plan',
+                timestamp: Date.now()
+            };
+            
+            socket.emit('boardroom_plan', testPlan);
+            logEvent('Sent boardroom_plan event', testPlan);
+        }
+        
+        // Send a test feedback request
+        function sendTestFeedback() {
+            if (!socket) {
+                alert('Please connect first');
+                return;
+            }
+            
+            const testFeedback = {
+                is_request: true,
+                feedback: 'Could you provide more information about your request?',
+                journey_id: 'test-journey-' + Date.now(),
+                timestamp: Date.now()
+            };
+            
+            socket.emit('boardroom_feedback', testFeedback);
+            logEvent('Sent boardroom_feedback event', testFeedback);
+        }
+        
+        // Send a message
+        function sendMessage() {
+            if (!socket) {
+                alert('Please connect first');
+                return;
+            }
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            const data = {
+                message: message,
+                timestamp: Date.now(),
+                conversation_id: 'default'
+            };
+            
+            socket.emit('send_message', data);
+            logEvent('Sent send_message event', data);
+            
+            messageInput.value = '';
+        }
+        
+        // Event listeners
+        connectBtn.addEventListener('click', connect);
+        disconnectBtn.addEventListener('click', disconnect);
+        testMessageBtn.addEventListener('click', sendTestMessage);
+        testBoardroomBtn.addEventListener('click', sendTestBoardroom);
+        
+        // New test buttons
+        const testPlanBtn = document.getElementById('test-plan-btn');
+        if (testPlanBtn) {
+            testPlanBtn.addEventListener('click', sendTestPlan);
+        }
+        
+        const testFeedbackBtn = document.getElementById('test-feedback-btn');
+        if (testFeedbackBtn) {
+            testFeedbackBtn.addEventListener('click', sendTestFeedback);
+        }
+        
+        // Conversation management buttons
+        const createConversationBtn = document.getElementById('create-conversation-btn');
+        if (createConversationBtn) {
+            createConversationBtn.addEventListener('click', function() {
+                if (!socket) {
+                    alert('Please connect first');
+                    return;
+                }
+                
+                const title = prompt('Enter conversation title:', 'New Conversation');
+                if (title) {
+                    socket.emit('conversation_create', {
+                        title: title,
+                        timestamp: Date.now()
+                    });
+                    logEvent('Sent conversation_create event', { title });
+                }
+            });
+        }
+        
+        const selectConversationBtn = document.getElementById('select-conversation-btn');
+        if (selectConversationBtn) {
+            selectConversationBtn.addEventListener('click', function() {
+                if (!socket) {
+                    alert('Please connect first');
+                    return;
+                }
+                
+                const conversationId = document.getElementById('conversation-id-input').value.trim();
+                if (conversationId) {
+                    socket.emit('conversation_select', {
+                        conversation_id: conversationId,
+                        timestamp: Date.now()
+                    });
+                    logEvent('Sent conversation_select event', { conversation_id: conversationId });
+                } else {
+                    alert('Please enter a conversation ID');
+                }
+            });
+        }
+        
+        const loadConversationBtn = document.getElementById('load-conversation-btn');
+        if (loadConversationBtn) {
+            loadConversationBtn.addEventListener('click', function() {
+                if (!socket) {
+                    alert('Please connect first');
+                    return;
+                }
+                
+                const conversationId = document.getElementById('conversation-id-input').value.trim();
+                if (conversationId) {
+                    socket.emit('get_conversation_messages', {
+                        conversation_id: conversationId,
+                        timestamp: Date.now()
+                    });
+                    logEvent('Sent get_conversation_messages event', { conversation_id: conversationId });
+                } else {
+                    alert('Please enter a conversation ID');
+                }
+            });
+        }
+        
+        clearLogBtn.addEventListener('click', () => {
+            eventLog.innerHTML = '';
+        });
+        
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Auto-connect on page load
+        window.addEventListener('load', connect);
+    </script>
+</body>
+</html>

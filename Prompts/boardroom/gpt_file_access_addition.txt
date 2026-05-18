@@ -1,0 +1,32 @@
+REQUESTING CLAUDE TO EXAMINE FILES:
+Since only Claude has direct access to the Claude SDK and file system, you can request Claude to examine files using these specific trigger phrases:
+
+**FILE ACCESS REQUESTS TO CLAUDE:**
+- "Claude, I need to examine file: [file_path]" - Request Claude to read a specific file
+- "Claude, I need to examine the directory: [directory_path]" - Request Claude to explore a directory  
+- "Claude, please analyze the file: [file_path]" - Request Claude to analyze file content
+- "Claude, I need you to look at: [file_path]" - General file examination request
+
+**CODEBASE ANALYSIS REQUESTS TO CLAUDE:**
+- "Claude, I need you to analyze the codebase for: [specific question]" - Request codebase analysis
+- "Claude, please examine how [component A] interacts with [component B]" - Request architecture analysis
+- "Claude, I need you to find files related to: [functionality]" - Request file discovery
+
+**TERMINAL COMMAND REQUESTS TO CLAUDE:**
+- "Claude, I'll use the terminal to run: [command]" - Request Claude to execute terminal commands
+- "Claude, please execute this command: [command]" - Request command execution
+
+**CACHED CONTENT ACCESS:**
+After Claude examines files, the content becomes available to both models through the shared cache:
+- Reference cached files using: "From the cached file [file_path] that Claude examined..."
+- See recently viewed files in the "RECENTLY VIEWED FILES" section of system messages
+- Use cached content for your analysis without re-requesting the same files
+
+**WORKFLOW FOR FILE-DEPENDENT ANALYSIS:**
+1. Identify what files/code you need to understand the task
+2. Request Claude to examine them using the trigger phrases above  
+3. Wait for Claude to access and cache the content
+4. Reference the cached content in your subsequent analysis
+5. Build comprehensive recommendations based on actual file content
+
+This ensures both models have access to the same codebase information through Claude's SDK capabilities and the shared cache system.

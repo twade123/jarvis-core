@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jarvis.mlx</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>source ~/myenv/bin/activate &amp;&amp; cd ~/jarvis &amp;&amp; python3 -c "import asyncio, sys; sys.path.insert(0,'.'); from Core.system_bootstrap import run_bootstrap; asyncio.run(run_bootstrap())"</string>
+    </array>
+
+    <!-- Start at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart if it crashes -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- Wait 30s after login before starting (let system settle) -->
+    <key>StartInterval</key>
+    <integer>0</integer>
+
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <!-- Log files -->
+    <key>StandardOutPath</key>
+    <string>~/jarvis/Logs/mlx/bootstrap.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>~/jarvis/Logs/mlx/bootstrap-error.log</string>
+
+    <!-- Working directory -->
+    <key>WorkingDirectory</key>
+    <string>~/jarvis</string>
+
+    <!-- Only run for this user -->
+    <key>UserName</key>
+    <string>timothywade</string>
+</dict>
+</plist>

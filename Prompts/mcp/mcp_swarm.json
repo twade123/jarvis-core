@@ -1,0 +1,28 @@
+{
+  "prompt_id": "mcp_swarm_enhanced",
+  "name": "Enhanced MCP Swarm Server",
+  "description": "Comprehensive prompt for swarm MCP server with real-time discovered capabilities",
+  "content": "I am the **Swarm MCP Server**, providing comprehensive swarm functionality through the Model Context Protocol.\n\n## \u2139\ufe0f Server Information\n\n**Server Name:** Swarm MCP Server\n**Version:** 1.0.0\n**Protocol:** MCP 2024-11-05\n\n**Capabilities:**\n- Tools: \u2705\n- Resources: \u2705\n- Prompts: \u2705\n- Logging: \u2705\n\n\n## \ud83d\udee0\ufe0f Available Tools\n\n### `get_database_components()`\nNo description available\n\n**Example:**\n```json\n{}\n```\n\n### `handle_swarm_intent()`\nHandle swarm management intents and delegate to swarm_handler instance.\n\n**Parameters:**\n- `intent_data`: The intent data for swarm operations (required)\n\n**Example:**\n```json\n{\n  \"intent_data\": \"example_intent_data\"\n}\n```\n\n### `send_message_to_jarvis()`\nSend a message to the Jarvis orchestrator\n\n**Parameters:**\n- `message`: Parameter message (optional)\n- `context`: Parameter context (optional)\n- `handler_params`: Parameter handler_params (optional)\n- `message_type`: Parameter message_type (optional)\n- `request_id`: Parameter request_id (optional)\n- `journey_id`: Parameter journey_id (optional)\n\n**Example:**\n```json\n{\n  \"message\": \"example_message\",\n  \"context\": \"example_context\",\n  \"handler_params\": \"example_handler_params\"\n}\n```\n\n### `track_journey_step()`\nTrack a step in the journey with enhanced parameters\n\n**Parameters:**\n- `journey_id`: Parameter journey_id (optional)\n- `step_name`: Parameter step_name (optional)\n- `description`: Parameter description (optional)\n- `step_type`: Parameter step_type (optional)\n- `input_data`: Parameter input_data (optional)\n- `output_data`: Parameter output_data (optional)\n- `error`: Parameter error (optional)\n\n**Example:**\n```json\n{\n  \"journey_id\": \"example_journey_id\",\n  \"step_name\": \"example_step_name\",\n  \"description\": \"example_description\"\n}\n```\n\n### `generate_request_id()`\nGenerate a unique request ID\n\n**Parameters:**\n- `task`: Parameter task (optional)\n\n**Example:**\n```json\n{\n  \"task\": \"example_task\"\n}\n```\n\n### `generate_simple_id()`\nGenerate a simple unique ID with the given prefix\n\n**Parameters:**\n- `prefix`: Parameter prefix (optional)\n\n**Example:**\n```json\n{\n  \"prefix\": \"example_prefix\"\n}\n```\n\n## \ud83d\udd27 Usage Examples\n\n### Tool Invocation\n```typescript\n// Call any tool through the MCP protocol\nconst result = await callTool(\"swarm_tool_name\", {\n  parameter1: \"value1\",\n  parameter2: \"value2\"\n});\n```\n\n### Resource Access\n```typescript\n// Access resources through MCP URIs\nconst resource = await readResource(\"resource://uri/here\");\n```\n\n### Prompt Templates\n```typescript\n// Use prompt templates with arguments\nconst prompt = await getPrompt(\"template_name\", {\n  argument1: \"value1\"\n});\n```\n\n## \ud83d\udccb Response Format\n\nAll operations return structured responses:\n```json\n{\n  \"success\": true,\n  \"data\": { /* actual result */ },\n  \"metadata\": {\n    \"timestamp\": \"2024-01-01T00:00:00Z\",\n    \"server\": \"swarm\",\n    \"version\": \"1.0.0\"\n  },\n  \"error\": null\n}\n```\n\n## \ud83d\udd17 Integration\n\nThis MCP server integrates seamlessly with Claude and other MCP-compatible clients. Each tool, resource, and prompt is automatically discovered and can be used through the standard MCP protocol.\n\n**Key Features:**\n- **Auto-discovery**: All capabilities are automatically exposed through MCP\n- **Type Safety**: Full JSON schema validation for all inputs\n- **Error Handling**: Comprehensive error reporting with context\n- **Performance**: Optimized for low-latency operations\n- **Security**: Built-in parameter validation and sanitization\n\nConnect to this server to access all swarm functionality in your Claude workflow!",
+  "version": "2.0.0",
+  "created_at": "2025-06-26T16:01:23.947711",
+  "updated_at": "2025-06-26T16:01:23.947730",
+  "author": "enhanced_mcp_generator",
+  "tags": [
+    "mcp",
+    "swarm",
+    "enhanced",
+    "discovery"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": [],
+  "metadata": {
+    "discovery_method": "mcp_server_launch",
+    "capabilities_discovered": 6,
+    "resources_discovered": 0,
+    "prompts_discovered": 0,
+    "discovery_timestamp": "2025-06-26T16:01:23.947732"
+  }
+}

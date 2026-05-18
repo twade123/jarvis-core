@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trevor API Socket.IO Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background-color: #f5f5f5; padding: 10px; border-radius: 5px; height: 300px; overflow-y: auto; margin-bottom: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        .warning { color: orange; }
+        #status { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .status-connected { background-color: #d4edda; color: #155724; }
+        .status-disconnected { background-color: #f8d7da; color: #721c24; }
+        .status-connecting { background-color: #fff3cd; color: #856404; }
+        button { margin-right: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Trevor API Socket.IO Connection Test</h1>
+    
+    <div id="status" class="status-disconnected">
+        Status: Disconnected
+    </div>
+    
+    <div>
+        <button id="connect">Connect</button>
+        <button id="disconnect">Disconnect</button>
+        <button id="ping">Send Ping</button>
+        <button id="clear">Clear Log</button>
+    </div>
+    
+    <h3>Connection Log</h3>
+    <div id="log" class="log"></div>
+    
+    <h3>API Test</h3>
+    <div>
+        <button id="get-status">Get API Status</button>
+        <button id="get-service-status">Get Service Status</button>
+    </div>
+    
+    <!-- Socket.IO Client Library -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <script>
+        // DOM elements
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        const connectBtn = document.getElementById('connect');
+        const disconnectBtn = document.getElementById('disconnect');
+        const pingBtn = document.getElementById('ping');
+        const clearBtn = document.getElementById('clear');
+        const getStatusBtn = document.getElementById('get-status');
+        const getServiceStatusBtn = document.getElementById('get-service-status');
+        
+        // Socket.IO instance
+        let socket = null;
+        
+        // Log function
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = type;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+            
+            // Also log to console
+            console[type === 'error' ? 'error' : 'log'](`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        // Update status
+        function updateStatus(status) {
+            statusEl.className = `status-${status.toLowerCase()}`;
+            statusEl.textContent = `Status: ${status}`;
+        }
+        
+        // Connect to Socket.IO server
+        function connect() {
+            if (socket) {
+                log('Already connected or connecting', 'warning');
+                return;
+            }
+            
+            updateStatus('Connecting');
+            log('Attempting to connect to server...', 'info');
+            
+            // Get server URL from current location
+            const protocol = window.location.protocol;
+            const hostname = window.location.hostname;
+            const port = window.location.port;
+            const serverUrl = `${protocol}//${hostname}:${port}`;
+            
+            log(`Connecting to: ${serverUrl}`, 'info');
+            
+            try {
+                // Configure Socket.IO
+                const options = {
+                    transports: ['polling', 'websocket'],  // Try polling first, then upgrade
+                    path: '/socket.io',
+                    reconnection: true,
+                    reconnectionAttempts: 5,
+                    reconnectionDelay: 1000,
+                    timeout: 20000
+                };
+                
+                log(`Socket.IO options: ${JSON.stringify(options)}`, 'info');
+                
+                // Create Socket.IO instance
+                socket = io(serverUrl, options);
+                
+                // Connection events
+                socket.on('connect', () => {
+                    log(`Connected to server with ID: ${socket.id}`, 'success');
+                    log(`Using transport: ${socket.io.engine.transport.name}`, 'info');
+                    updateStatus('Connected');
+                    
+                    // Enable/disable buttons
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = false;
+                    pingBtn.disabled = false;
+                });
+                
+                socket.on('disconnect', (reason) => {
+                    log(`Disconnected: ${reason}`, 'error');
+                    updateStatus('Disconnected');
+                    
+                    // Enable/disable buttons
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                    pingBtn.disabled = true;
+                    
+                    // Clear socket reference
+                    socket = null;
+                });
+                
+                socket.on('connect_error', (error) => {
+                    log(`Connection error: ${error.message}`, 'error');
+                    updateStatus('Error');
+                    
+                    // Show details about connection issues
+                    if (error.message.includes('timeout')) {
+                        log('Connection timed out - server might be unreachable', 'error');
+                    } else if (error.message.includes('xhr poll error')) {
+                        log('XHR poll error - possible CORS issue', 'error');
+                    }
+                });
+                
+                socket.on('error', (error) => {
+                    log(`Socket error: ${error}`, 'error');
+                });
+                
+                socket.io.on('reconnect_attempt', (attempt) => {
+                    log(`Reconnection attempt #${attempt}`, 'warning');
+                    updateStatus('Connecting');
+                });
+                
+                socket.io.on('reconnect', () => {
+                    log('Reconnected to server', 'success');
+                    updateStatus('Connected');
+                });
+                
+                socket.io.on('reconnect_error', (error) => {
+                    log(`Reconnection error: ${error.message}`, 'error');
+                });
+                
+                // Message events
+                socket.on('message', (data) => {
+                    log(`Received message: ${JSON.stringify(data)}`, 'info');
+                });
+                
+                socket.on('response', (data) => {
+                    log(`Received response: ${JSON.stringify(data)}`, 'success');
+                });
+                
+                socket.on('boardroom_update', (data) => {
+                    log(`Received boardroom update: ${JSON.stringify(data)}`, 'info');
+                });
+                
+                socket.on('status_update', (data) => {
+                    log(`Received status update: ${JSON.stringify(data)}`, 'info');
+                });
+            } catch (e) {
+                log(`Error creating Socket.IO instance: ${e.message}`, 'error');
+                updateStatus('Error');
+            }
+        }
+        
+        // Disconnect from server
+        function disconnect() {
+            if (!socket) {
+                log('Not connected', 'warning');
+                return;
+            }
+            
+            log('Disconnecting from server...', 'info');
+            socket.disconnect();
+        }
+        
+        // Send ping
+        function sendPing() {
+            if (!socket || !socket.connected) {
+                log('Not connected', 'error');
+                return;
+            }
+            
+            log('Sending ping...', 'info');
+            socket.emit('ping', { timestamp: Date.now() });
+        }
+        
+        // Get API status
+        function getApiStatus() {
+            log('Fetching API status...', 'info');
+            
+            fetch('/api/status')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    log(`API status: ${JSON.stringify(data)}`, 'success');
+                })
+                .catch(error => {
+                    log(`Error fetching API status: ${error.message}`, 'error');
+                });
+        }
+        
+        // Get service status
+        function getServiceStatus() {
+            log('Fetching service status...', 'info');
+            
+            fetch('/api/service_status')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Service status: ${JSON.stringify(data)}`, 'success');
+                })
+                .catch(error => {
+                    log(`Error fetching service status: ${error.message}`, 'error');
+                });
+        }
+        
+        // Clear log
+        function clearLog() {
+            logEl.innerHTML = '';
+            log('Log cleared', 'info');
+        }
+        
+        // Set up event listeners
+        connectBtn.addEventListener('click', connect);
+        disconnectBtn.addEventListener('click', disconnect);
+        pingBtn.addEventListener('click', sendPing);
+        clearBtn.addEventListener('click', clearLog);
+        getStatusBtn.addEventListener('click', getApiStatus);
+        getServiceStatusBtn.addEventListener('click', getServiceStatus);
+        
+        // Disable buttons initially
+        disconnectBtn.disabled = true;
+        pingBtn.disabled = true;
+        
+        // Auto-connect on page load
+        window.addEventListener('load', () => {
+            log('Page loaded', 'info');
+            log('Socket.IO test initialized - click Connect to start', 'info');
+            
+            // Optional: Auto-connect
+            // setTimeout(connect, 1000);
+        });
+    </script>
+</body>
+</html>

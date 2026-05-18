@@ -1,0 +1,59 @@
+{
+  "prompt_id": "claude_code_analysis_v1",
+  "name": "Claude Code Analysis Prompt",
+  "description": "Prompt for analyzing code structure and identifying patterns, used for helping users understand their codebase and identify improvements.",
+  "content": "Analyze this code and provide insights on its structure, patterns, and potential improvements:\n\n{{code}}\n\nPlease focus on:\n1. Architecture and design patterns\n2. Code organization and structure\n3. Potential improvements and optimization opportunities\n4. Any security or performance concerns\n\nProvide examples where applicable.",
+  "version": "1.0.0",
+  "created_at": "2025-06-20T10:00:00Z",
+  "updated_at": "2025-06-20T10:00:00Z",
+  "author": "jarvis_team",
+  
+  "models": {
+    "compatible": ["claude-3-opus-20240229", "claude-4-opus-20250514", "claude-4-sonnet-20250514"],
+    "preferred": "claude-4-opus-20250514",
+    "min_compatibility": "claude-3-opus-20240229"
+  },
+  
+  "agent_compatibility": {
+    "agent_types": ["code_analysis", "orchestrator", "boardroom"],
+    "handler_modules": ["handler_claude", "handler_coding", "handler_board_room"]
+  },
+  
+  "usage": {
+    "context": ["code_review", "architecture_analysis", "refactoring"],
+    "workflow_stages": ["analysis", "planning"],
+    "input_requirements": ["code"]
+  },
+  
+  "variables": {
+    "code": {
+      "description": "The code to be analyzed",
+      "required": true,
+      "type": "string"
+    }
+  },
+  
+  "performance": {
+    "avg_tokens": 450,
+    "expected_response_tokens": 1500,
+    "success_rate": 0.95,
+    "avg_response_time": 2.3,
+    "usage_count": 126
+  },
+  
+  "tags": ["code", "analysis", "architecture", "optimization"],
+  "prompt_family": "code_analysis",
+  "related_prompts": ["code_refactoring_v1", "security_review_v1"],
+  
+  "metadata": {
+    "source": "internal",
+    "is_template": true,
+    "examples": [
+      {
+        "input": "def calculate_total(items):\\n    total = 0\\n    for item in items:\\n        total += item.price * item.quantity\\n    return total",
+        "expected_output": "This is a simple function that calculates the total price of items. It has a clean implementation but could benefit from error handling for missing attributes."
+      }
+    ]
+  }
+}
+

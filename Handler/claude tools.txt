@@ -1,0 +1,1364 @@
+TOOLS
+Tool use with Claude
+Claude is capable of interacting with tools and functions, allowing you to extend Claude’s capabilities to perform a wider variety of tasks.
+
+Learn everything you need to master tool use with Claude via our new comprehensive tool use course! Please continue to share your ideas and suggestions using this form.
+Here’s an example of how to provide tools to Claude using the Messages API:
+
+
+Shell
+
+Python
+
+TypeScript
+
+Java
+
+Copy
+curl https://api.anthropic.com/v1/messages \
+  -H "content-type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{
+    "model": "claude-opus-4-20250514",
+    "max_tokens": 1024,
+    "tools": [
+      {
+        "name": "get_weather",
+        "description": "Get the current weather in a given location",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state, e.g. San Francisco, CA"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the weather like in San Francisco?"
+      }
+    ]
+  }'
+​
+How tool use works
+
+Claude supports two types of tools:
+
+Client tools: Tools that execute on your systems, which include:
+
+User-defined custom tools that you create and implement
+Anthropic-defined tools like computer use (beta) and text editor that require client implementation
+Server tools: Tools that execute on Anthropic’s servers, like the web search tool. These tools must be specified in the API request but don’t require implementation on your part.
+
+Anthropic-defined tools use versioned types (e.g., web_search_20250305, text_editor_20250124) to ensure compatibility across model versions.
+​
+Client tools
+
+Integrate client tools with Claude in these steps:
+
+1
+Provide Claude with tools and a user prompt
+
+Define client tools with names, descriptions, and input schemas in your API request.
+Include a user prompt that might require these tools, e.g., “What’s the weather in San Francisco?”
+2
+Claude decides to use a tool
+
+Claude assesses if any tools can help with the user’s query.
+If yes, Claude constructs a properly formatted tool use request.
+For client tools, the API response has a stop_reason of tool_use, signaling Claude’s intent.
+3
+Execute the tool and return results
+
+Extract the tool name and input from Claude’s request
+Execute the tool code on your system
+Return the results in a new user message containing a tool_result content block
+4
+Claude uses tool result to formulate a response
+
+Claude analyzes the tool results to craft its final response to the original user prompt.
+Note: Steps 3 and 4 are optional. For some workflows, Claude’s tool use request (step 2) might be all you need, without sending results back to Claude.
+
+​
+Server tools
+
+Server tools follow a different workflow:
+
+1
+Provide Claude with tools and a user prompt
+
+Server tools, like web search, have their own parameters.
+Include a user prompt that might require these tools, e.g., “Search for the latest news about AI.”
+2
+Claude executes the server tool
+
+Claude assesses if a server tool can help with the user’s query.
+If yes, Claude executes the tool, and the results are automatically incorporated into Claude’s response.
+3
+Claude uses the server tool result to formulate a response
+
+Claude analyzes the server tool results to craft its final response to the original user prompt.
+No additional user interaction is needed for server tool execution.
+​
+Tool use examples
+
+Here are a few code examples demonstrating various tool use patterns and techniques. For brevity’s sake, the tools are simple tools, and the tool descriptions are shorter than would be ideal to ensure best performance.
+
+
+Single tool example
+
+Multiple tool example
+
+Missing information
+
+Sequential tools
+
+Chain of thought tool use
+
+JSON mode
+​
+Pricing
+
+Tool use requests are priced based on:
+
+The total number of input tokens sent to the model (including in the tools parameter)
+The number of output tokens generated
+For server-side tools, additional usage-based pricing (e.g., web search charges per search performed)
+Client-side tools are priced the same as any other Claude API request, while server-side tools may incur additional charges based on their specific usage.
+
+The additional tokens from tool use come from:
+
+The tools parameter in API requests (tool names, descriptions, and schemas)
+tool_use content blocks in API requests and responses
+tool_result content blocks in API requests
+When you use tools, we also automatically include a special system prompt for the model which enables tool use. The number of tool use tokens required for each model are listed below (excluding the additional tokens listed above). Note that the table assumes at least 1 tool is provided. If no tools are provided, then a tool choice of none uses 0 additional system prompt tokens.
+
+Model	Tool choice	Tool use system prompt token count
+Claude Opus 4	auto, none
+any, tool	346 tokens
+313 tokens
+Claude Sonnet 4	auto, none
+any, tool	346 tokens
+313 tokens
+Claude Sonnet 3.7	auto, none
+any, tool	346 tokens
+313 tokens
+Claude Sonnet 3.5 (Oct)	auto, none
+any, tool	346 tokens
+313 tokens
+Claude Sonnet 3.5 (June)	auto, none
+any, tool	294 tokens
+261 tokens
+Claude Haiku 3.5	auto, none
+any, tool	264 tokens
+340 tokens
+Claude Opus 3	auto, none
+any, tool	530 tokens
+281 tokens
+Claude Sonnet 3	auto, none
+any, tool	159 tokens
+235 tokens
+Claude Haiku 3	auto, none
+any, tool	264 tokens
+340 tokens
+These token counts are added to your normal input and output tokens to calculate the total cost of a request.
+
+Refer to our models overview table for current per-model prices.
+
+When you send a tool use prompt, just like any other API request, the response will output both input and output token counts as part of the reported usage metrics.
+
+​
+Next Steps
+
+Explore our repository of ready-to-implement tool use code examples in our cookbooks:
+
+Calculator Tool
+Learn how to integrate a simple calculator tool with Claude for precise numerical computations.
+Customer Service Agent
+Build a responsive customer service bot that leverages client tools to enhance support.
+JSON Extractor
+See how Claude and tool use can extract structured data from unstructured text.
+
+
+TOOLS
+How to implement tool use
+​
+Choosing a model
+
+Generally, use Claude Opus 4, Claude Sonnet 4, Claude Sonnet 3.7, Claude Sonnet 3.5 or Claude Opus 3 for complex tools and ambiguous queries; they handle multiple tools better and seek clarification when needed.
+
+Use Claude Haiku 3.5 or Claude Haiku 3 for straightforward tools, but note they may infer missing parameters.
+
+If using Claude Sonnet 3.7 with tool use and extended thinking, refer to our guide here for more information.
+​
+Specifying client tools
+
+Client tools (both Anthropic-defined and user-defined) are specified in the tools top-level parameter of the API request. Each tool definition includes:
+
+Parameter	Description
+name	The name of the tool. Must match the regex ^[a-zA-Z0-9_-]{1,64}$.
+description	A detailed plaintext description of what the tool does, when it should be used, and how it behaves.
+input_schema	A JSON Schema object defining the expected parameters for the tool.
+
+Example simple tool definition
+​
+Tool use system prompt
+
+When you call the Anthropic API with the tools parameter, we construct a special system prompt from the tool definitions, tool configuration, and any user-specified system prompt. The constructed prompt is designed to instruct the model to use the specified tool(s) and provide the necessary context for the tool to operate properly:
+
+
+Copy
+In this environment you have access to a set of tools you can use to answer the user's question.
+{{ FORMATTING INSTRUCTIONS }}
+String and scalar parameters should be specified as is, while lists and objects should use JSON format. Note that spaces for string values are not stripped. The output is not expected to be valid XML and is parsed with regular expressions.
+Here are the functions available in JSONSchema format:
+{{ TOOL DEFINITIONS IN JSON SCHEMA }}
+{{ USER SYSTEM PROMPT }}
+{{ TOOL CONFIGURATION }}
+​
+Best practices for tool definitions
+
+To get the best performance out of Claude when using tools, follow these guidelines:
+
+Provide extremely detailed descriptions. This is by far the most important factor in tool performance. Your descriptions should explain every detail about the tool, including:
+What the tool does
+When it should be used (and when it shouldn’t)
+What each parameter means and how it affects the tool’s behavior
+Any important caveats or limitations, such as what information the tool does not return if the tool name is unclear. The more context you can give Claude about your tools, the better it will be at deciding when and how to use them. Aim for at least 3-4 sentences per tool description, more if the tool is complex.
+Prioritize descriptions over examples. While you can include examples of how to use a tool in its description or in the accompanying prompt, this is less important than having a clear and comprehensive explanation of the tool’s purpose and parameters. Only add examples after you’ve fully fleshed out the description.
+
+Example of a good tool description
+
+Example poor tool description
+The good description clearly explains what the tool does, when to use it, what data it returns, and what the ticker parameter means. The poor description is too brief and leaves Claude with many open questions about the tool’s behavior and usage.
+
+​
+Controlling Claude’s output
+
+​
+Forcing tool use
+
+In some cases, you may want Claude to use a specific tool to answer the user’s question, even if Claude thinks it can provide an answer without using a tool. You can do this by specifying the tool in the tool_choice field like so:
+
+
+Copy
+tool_choice = {"type": "tool", "name": "get_weather"}
+When working with the tool_choice parameter, we have four possible options:
+
+auto allows Claude to decide whether to call any provided tools or not. This is the default value when tools are provided.
+any tells Claude that it must use one of the provided tools, but doesn’t force a particular tool.
+tool allows us to force Claude to always use a particular tool.
+none prevents Claude from using any tools. This is the default value when no tools are provided.
+This diagram illustrates how each option works:
+
+
+Note that when you have tool_choice as any or tool, we will prefill the assistant message to force a tool to be used. This means that the models will not emit a chain-of-thought text content block before tool_use content blocks, even if explicitly asked to do so.
+
+When using extended thinking with tool use, tool_choice: {"type": "any"} and tool_choice: {"type": "tool", "name": "..."} are not supported and will result in an error. Only tool_choice: {"type": "auto"} (the default) and tool_choice: {"type": "none"} are compatible with extended thinking.
+Our testing has shown that this should not reduce performance. If you would like to keep chain-of-thought (particularly with Opus) while still requesting that the model use a specific tool, you can use {"type": "auto"} for tool_choice (the default) and add explicit instructions in a user message. For example: What's the weather like in London? Use the get_weather tool in your response.
+
+​
+JSON output
+
+Tools do not necessarily need to be client functions — you can use tools anytime you want the model to return JSON output that follows a provided schema. For example, you might use a record_summary tool with a particular schema. See tool use examples for a full working example.
+
+​
+Chain of thought
+
+When using tools, Claude will often show its “chain of thought”, i.e. the step-by-step reasoning it uses to break down the problem and decide which tools to use. The Claude Opus 3 model will do this if tool_choice is set to auto (this is the default value, see Forcing tool use), and Sonnet and Haiku can be prompted into doing it.
+
+For example, given the prompt “What’s the weather like in San Francisco right now, and what time is it there?”, Claude might respond with:
+
+JSON
+
+Copy
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "<thinking>To answer this question, I will: 1. Use the get_weather tool to get the current weather in San Francisco. 2. Use the get_time tool to get the current time in the America/Los_Angeles timezone, which covers San Francisco, CA.</thinking>"
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_01A09q90qw90lq917835lq9",
+      "name": "get_weather",
+      "input": {"location": "San Francisco, CA"}
+    }
+  ]
+}
+This chain of thought gives insight into Claude’s reasoning process and can help you debug unexpected behavior.
+
+With the Claude Sonnet 3 model, chain of thought is less common by default, but you can prompt Claude to show its reasoning by adding something like "Before answering, explain your reasoning step-by-step in tags." to the user message or system prompt.
+
+It’s important to note that while the <thinking> tags are a common convention Claude uses to denote its chain of thought, the exact format (such as what this XML tag is named) may change over time. Your code should treat the chain of thought like any other assistant-generated text, and not rely on the presence or specific formatting of the <thinking> tags.
+
+​
+Parallel tool use
+
+By default, Claude may use multiple tools to answer a user query. You can disable this behavior by:
+
+Setting disable_parallel_tool_use=true when tool_choice type is auto, which ensures that Claude uses at most one tool
+Setting disable_parallel_tool_use=true when tool_choice type is any or tool, which ensures that Claude uses exactly one tool
+Parallel tool use with Claude Sonnet 3.7
+
+Claude Sonnet 3.7 may be less likely to make make parallel tool calls in a response, even when you have not set disable_parallel_tool_use. To work around this, we recommend enabling token-efficient tool use, which helps encourage Claude to use parallel tools. This beta feature also reduces latency and saves an average of 14% in output tokens.
+
+If you prefer not to opt into the token-efficient tool use beta, you can also introduce a “batch tool” that can act as a meta-tool to wrap invocations to other tools simultaneously. We find that if this tool is present, the model will use it to simultaneously call multiple tools in parallel for you.
+
+See this example in our cookbook for how to use this workaround.
+​
+Handling tool use and tool result content blocks
+
+Claude’s response differs based on whether it uses a client or server tool.
+
+​
+Handling results from client tools
+
+The response will have a stop_reason of tool_use and one or more tool_use content blocks that include:
+
+id: A unique identifier for this particular tool use block. This will be used to match up the tool results later.
+name: The name of the tool being used.
+input: An object containing the input being passed to the tool, conforming to the tool’s input_schema.
+
+Example API response with a `tool_use` content block
+When you receive a tool use response for a client tool, you should:
+
+Extract the name, id, and input from the tool_use block.
+Run the actual tool in your codebase corresponding to that tool name, passing in the tool input.
+Continue the conversation by sending a new message with the role of user, and a content block containing the tool_result type and the following information:
+tool_use_id: The id of the tool use request this is a result for.
+content: The result of the tool, as a string (e.g. "content": "15 degrees") or list of nested content blocks (e.g. "content": [{"type": "text", "text": "15 degrees"}]). These content blocks can use the text or image types.
+is_error (optional): Set to true if the tool execution resulted in an error.
+
+Example of successful tool result
+
+Example of tool result with images
+
+Example of empty tool result
+After receiving the tool result, Claude will use that information to continue generating a response to the original user prompt.
+
+​
+Handling results from server tools
+
+Claude executes the tool internally and incorporates the results directly into its response without requiring additional user interaction.
+
+Differences from other APIs
+
+Unlike APIs that separate tool use or use special roles like tool or function, Anthropic’s API integrates tools directly into the user and assistant message structure.
+
+Messages contain arrays of text, image, tool_use, and tool_result blocks. user messages include client content and tool_result, while assistant messages contain AI-generated content and tool_use.
+​
+Handling the pause_turn stop reason
+
+When using server tools like web search, the API may return a pause_turn stop reason, indicating that the API has paused a long-running turn.
+
+Here’s how to handle the pause_turn stop reason:
+
+
+Python
+
+TypeScript
+
+Copy
+import anthropic
+
+client = anthropic.Anthropic()
+
+# Initial request with web search
+response = client.messages.create(
+    model="claude-3-7-sonnet-latest",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": "Search for comprehensive information about quantum computing breakthroughs in 2025"
+        }
+    ],
+    tools=[{
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "max_uses": 10
+    }]
+)
+
+# Check if the response has pause_turn stop reason
+if response.stop_reason == "pause_turn":
+    # Continue the conversation with the paused content
+    messages = [
+        {"role": "user", "content": "Search for comprehensive information about quantum computing breakthroughs in 2025"},
+        {"role": "assistant", "content": response.content}
+    ]
+    
+    # Send the continuation request
+    continuation = client.messages.create(
+        model="claude-3-7-sonnet-latest",
+        max_tokens=1024,
+        messages=messages,
+        tools=[{
+            "type": "web_search_20250305",
+            "name": "web_search",
+            "max_uses": 10
+        }]
+    )
+    
+    print(continuation)
+else:
+    print(response)
+When handling pause_turn:
+
+Continue the conversation: Pass the paused response back as-is in a subsequent request to let Claude continue its turn
+Modify if needed: You can optionally modify the content before continuing if you want to interrupt or redirect the conversation
+Preserve tool state: Include the same tools in the continuation request to maintain functionality
+​
+Troubleshooting errors
+
+There are a few different types of errors that can occur when using tools with Claude:
+
+
+TOOLS
+Token-efficient tool use (beta)
+Claude Sonnet 3.7 is capable of calling tools in a token-efficient manner. Requests save an average of 14% in output tokens, up to 70%, which also reduces latency. Exact token reduction and latency improvements depend on the overall response shape and size.
+
+Token-efficient tool use is a beta feature. Please make sure to evaluate your responses before using it in production.
+
+Please use this form to provide feedback on the quality of the model responses, the API itself, or the quality of the documentation—we cannot wait to hear from you!
+If you choose to experiment with this feature, we recommend using the Prompt Improver in the Console to improve your prompt.
+Token-efficient tool use does not currently work with disable_parallel_tool_use.
+
+Claude 4 models (Opus and Sonnet) do not support this feature. The beta header token-efficient-tools-2025-02-19 will not break an API request, but it will result in a no-op.
+To use this beta feature, simply add the beta header token-efficient-tools-2025-02-19 to a tool use request. If you are using the SDK, ensure that you are using the beta SDK with anthropic.beta.messages.
+
+Here’s an example of how to use token-efficient tools with the API:
+
+
+Shell
+
+Python
+
+TypeScript
+
+Java
+
+Copy
+curl https://api.anthropic.com/v1/messages \
+  -H "content-type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: token-efficient-tools-2025-02-19" \
+  -d '{
+    "model": "claude-3-7-sonnet-20250219",
+    "max_tokens": 1024,
+    "tools": [
+      {
+        "name": "get_weather",
+        "description": "Get the current weather in a given location",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The city and state, e.g. San Francisco, CA"
+            }
+          },
+          "required": [
+            "location"
+          ]
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "Tell me the weather in San Francisco."
+      }
+    ]
+  }' | jq '.usage'
+The above request should, on average, use fewer input and output tokens than a normal request. To confirm this, try making the same request but remove token-efficient-tools-2025-02-19 from the beta headers list.
+
+To keep the benefits of prompt caching, use the beta header consistently for requests you’d like to cache. If you selectively use it, prompt caching will fail.
+
+CLIENT TOOLS
+Text editor tool
+Claude can use an Anthropic-defined text editor tool to view and modify text files, helping you debug, fix, and improve your code or other text documents. This allows Claude to directly interact with your files, providing hands-on assistance rather than just suggesting changes.
+
+​
+Before using the text editor tool
+
+​
+Use a compatible model
+
+Anthropic’s text editor tool is available for multiple Claude models:
+
+Claude 4 Opus & Sonnet: text_editor_20250429
+Claude Sonnet 3.7: text_editor_20250124
+Claude Sonnet 3.5: text_editor_20241022
+The newer text_editor_20250429 for Claude 4 models does not include the undo_edit command. If you require this functionality, you’ll need to use Claude 3.7 or Sonnet 3.5 with their respective tool versions.
+​
+Assess your use case fit
+
+Some examples of when to use the text editor tool are:
+
+Code debugging: Have Claude identify and fix bugs in your code, from syntax errors to logic issues.
+Code refactoring: Let Claude improve your code structure, readability, and performance through targeted edits.
+Documentation generation: Ask Claude to add docstrings, comments, or README files to your codebase.
+Test creation: Have Claude create unit tests for your code based on its understanding of the implementation.
+​
+Use the text editor tool
+
+Claude 4
+Claude Sonnet 3.7
+Claude Sonnet 3.5
+Provide the text editor tool (named str_replace_based_edit_tool) to Claude using the Messages API:
+
+
+Python
+
+Shell
+
+Java
+
+Copy
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-opus-4-20250514",
+    max_tokens=1024,
+    tools=[
+        {
+            "type": "text_editor_20250429",
+            "name": "str_replace_based_edit_tool"
+        }
+    ],
+    messages=[
+        {
+            "role": "user", 
+            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
+        }
+    ]
+)
+The text editor tool can be used in the following way:
+
+1
+Provide Claude with the text editor tool and a user prompt
+
+Include the text editor tool in your API request
+Provide a user prompt that may require examining or modifying files, such as “Can you fix the syntax error in my code?”
+2
+Claude uses the tool to examine files or directories
+
+Claude assesses what it needs to look at and uses the view command to examine file contents or list directory contents
+The API response will contain a tool_use content block with the view command
+3
+Execute the view command and return results
+
+Extract the file or directory path from Claude’s tool use request
+Read the file’s contents or list the directory contents and return them to Claude
+Return the results to Claude by continuing the conversation with a new user message containing a tool_result content block
+4
+Claude uses the tool to modify files
+
+After examining the file or directory, Claude may use a command such as str_replace to make changes or insert to add text at a specific line number.
+If Claude uses the str_replace command, Claude constructs a properly formatted tool use request with the old text and new text to replace it with
+5
+Execute the edit and return results
+
+Extract the file path, old text, and new text from Claude’s tool use request
+Perform the text replacement in the file
+Return the results to Claude
+6
+Claude provides its analysis and explanation
+
+After examining and possibly editing the files, Claude provides a complete explanation of what it found and what changes it made
+​
+Text editor tool commands
+
+The text editor tool supports several commands for viewing and modifying files:
+
+​
+view
+
+The view command allows Claude to examine the contents of a file or list the contents of a directory. It can read the entire file or a specific range of lines.
+
+Parameters:
+
+command: Must be “view”
+path: The path to the file or directory to view
+view_range (optional): An array of two integers specifying the start and end line numbers to view. Line numbers are 1-indexed, and -1 for the end line means read to the end of the file. This parameter only applies when viewing files, not directories.
+
+Example view commands
+​
+str_replace
+
+The str_replace command allows Claude to replace a specific string in a file with a new string. This is used for making precise edits.
+
+Parameters:
+
+command: Must be “str_replace”
+path: The path to the file to modify
+old_str: The text to replace (must match exactly, including whitespace and indentation)
+new_str: The new text to insert in place of the old text
+
+Example str_replace command
+​
+create
+
+The create command allows Claude to create a new file with specified content.
+
+Parameters:
+
+command: Must be “create”
+path: The path where the new file should be created
+file_text: The content to write to the new file
+
+Example create command
+​
+insert
+
+The insert command allows Claude to insert text at a specific location in a file.
+
+Parameters:
+
+command: Must be “insert”
+path: The path to the file to modify
+insert_line: The line number after which to insert the text (0 for beginning of file)
+new_str: The text to insert
+
+Example insert command
+​
+undo_edit
+
+The undo_edit command allows Claude to revert the last edit made to a file.
+
+This command is only available in Claude Sonnet 3.7 and Claude Sonnet 3.5. It is not supported in Claude 4 models using the text_editor_20250429.
+Parameters:
+
+command: Must be “undo_edit”
+path: The path to the file whose last edit should be undone
+
+Example undo_edit command
+​
+Example: Fixing a syntax error with the text editor tool
+
+Claude 4
+Claude Sonnet 3.7
+This example demonstrates how Claude 4 uses the text editor tool to fix a syntax error in a Python file.
+
+First, your application provides Claude with the text editor tool and a prompt to fix a syntax error:
+
+
+Python
+
+Java
+
+Copy
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-opus-4-20250514",
+    max_tokens=1024,
+    tools=[
+        {
+            "type": "text_editor_20250429",
+            "name": "str_replace_based_edit_tool"
+        }
+    ],
+    messages=[
+        {
+            "role": "user", 
+            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
+        }
+    ]
+)
+
+print(response)
+Claude will use the text editor tool first to view the file:
+
+
+Copy
+{
+  "id": "msg_01XAbCDeFgHiJkLmNoPQrStU",
+  "model": "claude-opus-4-20250514",
+  "stop_reason": "tool_use",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "I'll help you fix the syntax error in your primes.py file. First, let me take a look at the file to identify the issue."
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_01AbCdEfGhIjKlMnOpQrStU",
+      "name": "str_replace_based_edit_tool",
+      "input": {
+        "command": "view",
+        "path": "primes.py"
+      }
+    }
+  ]
+}
+Your application should then read the file and return its contents to Claude:
+
+
+Python
+
+Java
+
+Copy
+response = client.messages.create(
+    model="claude-opus-4-20250514",
+    max_tokens=1024,
+    tools=[
+        {
+            "type": "text_editor_20250429",
+            "name": "str_replace_based_edit_tool"
+        }
+    ],
+    messages=[
+        {
+            "role": "user", 
+            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
+        },
+        {
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "I'll help you fix the syntax error in your primes.py file. First, let me take a look at the file to identify the issue."
+                },
+                {
+                    "type": "tool_use",
+                    "id": "toolu_01AbCdEfGhIjKlMnOpQrStU",
+                    "name": "str_replace_based_edit_tool",
+                    "input": {
+                        "command": "view",
+                        "path": "primes.py"
+                    }
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "tool_result",
+                    "tool_use_id": "toolu_01AbCdEfGhIjKlMnOpQrStU",
+                    "content": "1: def is_prime(n):\n2:     \"\"\"Check if a number is prime.\"\"\"\n3:     if n <= 1:\n4:         return False\n5:     if n <= 3:\n6:         return True\n7:     if n % 2 == 0 or n % 3 == 0:\n8:         return False\n9:     i = 5\n10:     while i * i <= n:\n11:         if n % i == 0 or n % (i + 2) == 0:\n12:             return False\n13:         i += 6\n14:     return True\n15: \n16: def get_primes(limit):\n17:     \"\"\"Generate a list of prime numbers up to the given limit.\"\"\"\n18:     primes = []\n19:     for num in range(2, limit + 1)\n20:         if is_prime(num):\n21:             primes.append(num)\n22:     return primes\n23: \n24: def main():\n25:     \"\"\"Main function to demonstrate prime number generation.\"\"\"\n26:     limit = 100\n27:     prime_list = get_primes(limit)\n28:     print(f\"Prime numbers up to {limit}:\")\n29:     print(prime_list)\n30:     print(f\"Found {len(prime_list)} prime numbers.\")\n31: \n32: if __name__ == \"__main__\":\n33:     main()"
+                }
+            ]
+        }
+    ]
+)
+Line numbers
+
+In the example above, the view tool result includes file contents with line numbers prepended to each line (e.g., “1: def is_prime(n):”). Line numbers are not required, but they are essential for successfully using the view_range parameter to examine specific sections of files and the insert_line parameter to add content at precise locations.
+Claude will identify the syntax error and use the str_replace command to fix it:
+
+
+Copy
+{
+  "id": "msg_01VwXyZAbCdEfGhIjKlMnO",
+  "model": "claude-opus-4-20250514",
+  "stop_reason": "tool_use",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "I found the syntax error in your primes.py file. In the `get_primes` function, there is a missing colon (:) at the end of the for loop line. Let me fix that for you."
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_01PqRsTuVwXyZAbCdEfGh",
+      "name": "str_replace_based_edit_tool",
+      "input": {
+        "command": "str_replace",
+        "path": "primes.py",
+        "old_str": "    for num in range(2, limit + 1)",
+        "new_str": "    for num in range(2, limit + 1):"
+      }
+    }
+  ]
+}
+Your application should then make the edit and return the result:
+
+
+Python
+
+Java
+
+Copy
+response = client.messages.create(
+    model="claude-opus-4-20250514",
+    max_tokens=1024,
+    tools=[
+        {
+            "type": "text_editor_20250429",
+            "name": "str_replace_based_edit_tool"
+        }
+    ],
+    messages=[
+        # Previous messages...
+        {
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "I found the syntax error in your primes.py file. In the `get_primes` function, there is a missing colon (:) at the end of the for loop line. Let me fix that for you."
+                },
+                {
+                    "type": "tool_use",
+                    "id": "toolu_01PqRsTuVwXyZAbCdEfGh",
+                    "name": "str_replace_based_edit_tool",
+                    "input": {
+                        "command": "str_replace",
+                        "path": "primes.py",
+                        "old_str": "    for num in range(2, limit + 1)",
+                        "new_str": "    for num in range(2, limit + 1):"
+                    }
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "tool_result",
+                    "tool_use_id": "toolu_01PqRsTuVwXyZAbCdEfGh",
+                    "content": "Successfully replaced text at exactly one location."
+                }
+            ]
+        }
+    ]
+)
+Finally, Claude will provide a complete explanation of the fix:
+
+
+Copy
+{
+  "id": "msg_01IjKlMnOpQrStUvWxYzAb",
+  "model": "claude-opus-4-20250514",
+  "stop_reason": "end_turn",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "I've fixed the syntax error in your primes.py file. The issue was in the `get_primes` function at line 19. There was a missing colon (:) at the end of the for loop line.\n\nHere's what I changed:\n\nFrom:\n```python\nfor num in range(2, limit + 1)\n```\n\nTo:\n```python\nfor num in range(2, limit + 1):\n```\n\nIn Python, a colon is required at the end of statements that start a new code block, such as for loops, if statements, function definitions, etc. Without the colon, Python raises a syntax error because it doesn't know where the code block begins.\n\nYour code should now run correctly. The function will properly generate a list of prime numbers up to the specified limit."
+    }
+  ]
+}
+​
+Implement the text editor tool
+
+The text editor tool is implemented as a schema-less tool. When using this tool, you don’t need to provide an input schema as with other tools; the schema is built into Claude’s model and can’t be modified.
+
+The tool type depends on the model version:
+
+Claude 4: type: "text_editor_20250429"
+Claude Sonnet 3.7: type: "text_editor_20250124"
+Claude Sonnet 3.5: type: "text_editor_20241022"
+1
+Initialize your editor implementation
+
+Create helper functions to handle file operations like reading, writing, and modifying files. Consider implementing backup functionality to recover from mistakes.
+
+2
+Handle editor tool calls
+
+Create a function that processes tool calls from Claude based on the command type:
+
+
+Copy
+def handle_editor_tool(tool_call, model_version):
+    input_params = tool_call.input
+    command = input_params.get('command', '')
+    file_path = input_params.get('path', '')
+    
+    if command == 'view':
+        # Read and return file contents
+        pass
+    elif command == 'str_replace':
+        # Replace text in file
+        pass
+    elif command == 'create':
+        # Create new file
+        pass
+    elif command == 'insert':
+        # Insert text at location
+        pass
+    elif command == 'undo_edit':
+        # Check if it's a Claude 4 model
+        if 'str_replace_based_edit_tool' in model_version:
+            return {"error": "undo_edit command is not supported in Claude 4"}
+        # Restore from backup for Claude 3.7/3.5
+        pass
+3
+Implement security measures
+
+Add validation and security checks:
+
+Validate file paths to prevent directory traversal
+Create backups before making changes
+Handle errors gracefully
+Implement permissions checks
+4
+Process Claude's responses
+
+Extract and handle tool calls from Claude’s responses:
+
+
+Copy
+# Process tool use in Claude's response
+for content in response.content:
+    if content.type == "tool_use":
+        # Execute the tool based on command
+        result = handle_editor_tool(content)
+        
+        # Return result to Claude
+        tool_result = {
+            "type": "tool_result",
+            "tool_use_id": content.id,
+            "content": result
+        }
+When implementing the text editor tool, keep in mind:
+
+Security: The tool has access to your local filesystem, so implement proper security measures.
+Backup: Always create backups before allowing edits to important files.
+Validation: Validate all inputs to prevent unintended changes.
+Unique matching: Make sure replacements match exactly one location to avoid unintended edits.
+​
+Handle errors
+
+When using the text editor tool, various errors may occur. Here is guidance on how to handle them:
+
+
+File not found
+
+Multiple matches for replacement
+
+No matches for replacement
+
+Permission errors
+​
+Follow implementation best practices
+
+
+Provide clear context
+
+Be explicit about file paths
+
+Create backups before editing
+
+Handle unique text replacement carefully
+
+Verify changes
+​
+Pricing and token usage
+
+The text editor tool uses the same pricing structure as other tools used with Claude. It follows the standard input and output token pricing based on the Claude model you’re using.
+
+In addition to the base tokens, the following additional input tokens are needed for the text editor tool:
+
+Tool	Additional input tokens
+text_editor_20250429 (Claude 4)	700 tokens
+text_editor_20250124 (Claude Sonnet 3.7)	700 tokens
+text_editor_20241022 (Claude Sonnet 3.5)	700 tokens
+For more detailed information about tool pricing, see Tool use pricing.
+
+​
+Integrate the text editor tool with computer use
+
+The text editor tool can be used alongside the computer use tool and other Anthropic-defined tools. When combining these tools, you’ll need to:
+
+Include the appropriate beta header (if using with computer use)
+Match the tool version with the model you’re using
+Account for the additional token usage for all tools included in your request
+For more information about using the text editor tool in a computer use context, see the Computer use.
+
+​
+Change log
+
+Date	Version	Changes
+April 29, 2025	text_editor_20250429	Release of the text editor Tool for Claude 4. This version removes the undo_edit command but maintains all other capabilities. The tool name has been updated to reflect its str_replace-based architecture.
+March 13, 2025	text_editor_20250124	Introduction of standalone text editor Tool documentation. This version is optimized for Claude Sonnet 3.7 but has identical capabilities to the previous version.
+October 22, 2024	text_editor_20241022	Initial release of the text editor Tool with Claude Sonnet 3.5. Provides capabilities for viewing, creating, and editing files through the view, create, str_replace, insert, and undo_edit commands.
+​
+Next steps
+
+Here are some ideas for how to use the text editor tool in more convenient and powerful ways:
+
+Integrate with your development workflow: Build the text editor tool into your development tools or IDE
+Create a code review system: Have Claude review your code and make improvements
+Build a debugging assistant: Create a system where Claude can help you diagnose and fix issues in your code
+Implement file format conversion: Let Claude help you convert files from one format to another
+Automate documentation: Set up workflows for Claude to automatically document your code
+As you build applications with the text editor tool, we’re excited to see how you leverage Claude’s capabilities to enhance your development workflow and productivity.
+
+Tool use overview
+Learn how to implement tool workflows for use with Claude.
+Token-efficient tool use
+Reduce latency and costs when using tools with Claude Sonnet 3.7.
+Anthropic-defined tools
+Learn how to use other Anthropic-defined tools such as the computer and bash tools.
+
+
+SERVER TOOLS
+Web search tool
+The web search tool gives Claude direct access to real-time web content, allowing it to answer questions with up-to-date information beyond its knowledge cutoff. Claude automatically cites sources from search results as part of its answer.
+
+Please reach out through our feedback form to share your experience with the web search tool.
+​
+Supported models
+
+Web search is available on:
+
+Claude Opus 4 (claude-opus-4-20250514)
+Claude Sonnet 4 (claude-sonnet-4-20250514)
+Claude Sonnet 3.7 (claude-3-7-sonnet-20250219)
+Claude Sonnet 3.5 (new) (claude-3-5-sonnet-latest)
+Claude Haiku 3.5 (claude-3-5-haiku-latest)
+​
+How web search works
+
+When you add the web search tool to your API request:
+
+Claude decides when to search based on the prompt.
+The API executes the searches and provides Claude with the results. This process may repeat multiple times throughout a single request.
+At the end of its turn, Claude provides a final response with cited sources.
+​
+How to use web search
+
+Your organization’s administrator must enable web search in Console.
+Provide the web search tool in your API request:
+
+
+Shell
+
+Python
+
+TypeScript
+
+Copy
+curl https://api.anthropic.com/v1/messages \
+    --header "x-api-key: $ANTHROPIC_API_KEY" \
+    --header "anthropic-version: 2023-06-01" \
+    --header "content-type: application/json" \
+    --data '{
+        "model": "claude-3-7-sonnet-latest",
+        "max_tokens": 1024,
+        "messages": [
+            {
+                "role": "user",
+                "content": "How do I update a web app to TypeScript 5.5?"
+            }
+        ],
+        "tools": [{
+            "type": "web_search_20250305",
+            "name": "web_search",
+            "max_uses": 5
+        }]
+    }'
+    ​
+Tool definition
+
+The web search tool supports the following parameters:
+
+JSON
+
+Copy
+{
+  "type": "web_search_20250305",
+  "name": "web_search",
+  
+  // Optional: Limit the number of searches per request
+  "max_uses": 5,
+  
+  // Optional: Only include results from these domains
+  "allowed_domains": ["example.com", "trusteddomain.org"],
+  
+  // Optional: Never include results from these domains
+  "blocked_domains": ["untrustedsource.com"],
+  
+  // Optional: Localize search results
+  "user_location": {
+    "type": "approximate",
+    "city": "San Francisco",
+    "region": "California",
+    "country": "US",
+    "timezone": "America/Los_Angeles"
+  }
+}
+​
+Max uses
+
+The max_uses parameter limits the number of searches performed. If Claude attempts more searches than allowed, the web_search_tool_result will be an error with the max_uses_exceeded error code.
+
+​
+Domain filtering
+
+When using domain filters:
+
+Domains should not include the HTTP/HTTPS scheme (use example.com instead of https://example.com)
+Subdomains are automatically included (example.com covers docs.example.com)
+Subpaths are supported (example.com/blog)
+You can use either allowed_domains or blocked_domains, but not both in the same request.
+​
+Localization
+
+The user_location parameter allows you to localize search results based on a user’s location.
+
+type: The type of location (must be approximate)
+city: The city name
+region: The region or state
+country: The country
+timezone: The IANA timezone ID.
+​
+Response
+
+Here’s an example response structure:
+
+
+Copy
+{
+  "role": "assistant",
+  "content": [
+    // 1. Claude's decision to search
+    {
+      "type": "text",
+      "text": "I'll search for when Claude Shannon was born."
+    },
+    // 2. The search query used
+    {
+      "type": "server_tool_use",
+      "id": "srvtoolu_01WYG3ziw53XMcoyKL4XcZmE",
+      "name": "web_search",
+      "input": {
+        "query": "claude shannon birth date"
+      }
+    },
+    // 3. Search results
+    {
+      "type": "web_search_tool_result",
+      "tool_use_id": "srvtoolu_01WYG3ziw53XMcoyKL4XcZmE",
+      "content": [
+        {
+          "type": "web_search_result",
+          "url": "https://en.wikipedia.org/wiki/Claude_Shannon",
+          "title": "Claude Shannon - Wikipedia",
+          "encrypted_content": "EqgfCioIARgBIiQ3YTAwMjY1Mi1mZjM5LTQ1NGUtODgxNC1kNjNjNTk1ZWI3Y...",
+          "page_age": "April 30, 2025"
+        }
+      ]
+    },
+    {
+      "text": "Based on the search results, ",
+      "type": "text"
+    },
+    // 4. Claude's response with citations
+    {
+      "text": "Claude Shannon was born on April 30, 1916, in Petoskey, Michigan",
+      "type": "text",
+      "citations": [
+        {
+          "type": "web_search_result_location",
+          "url": "https://en.wikipedia.org/wiki/Claude_Shannon",
+          "title": "Claude Shannon - Wikipedia",
+          "encrypted_index": "Eo8BCioIAhgBIiQyYjQ0OWJmZi1lNm..",
+          "cited_text": "Claude Elwood Shannon (April 30, 1916 – February 24, 2001) was an American mathematician, electrical engineer, computer scientist, cryptographer and i..."
+        }
+      ]
+    }
+  ],
+  "id": "msg_a930390d3a",
+  "usage": {
+    "input_tokens": 6039,
+    "output_tokens": 931,
+    "server_tool_use": {
+      "web_search_requests": 1
+    }
+  },
+  "stop_reason": "end_turn"
+}
+​
+Search results
+
+Search results include:
+
+url: The URL of the source page
+title: The title of the source page
+page_age: When the site was last updated
+encrypted_content: Encrypted content that must be passed back in multi-turn conversations for citations
+​
+Citations
+
+Citations are always enabled for web search, and each web_search_result_location includes:
+
+url: The URL of the cited source
+title: The title of the cited source
+encrypted_index: A reference that must be passed back for multi-turn conversations.
+cited_text: Up to 150 characters of the cited content
+The web search citation fields cited_text, title, and url do not count towards input or output token usage.
+
+When displaying web results or information contained in web results to end users, inline citations must be made clearly visible and clickable in your user interface.
+​
+Errors
+
+If an error occurs during web search, you’ll receive a response that takes the following form:
+
+
+Copy
+{
+  "type": "web_search_tool_result",
+  "tool_use_id": "servertoolu_a93jad",
+  "content": {
+    "type": "web_search_tool_result_error",
+    "error_code": "max_uses_exceeded"
+  }
+}
+These are the possible error codes:
+
+too_many_requests: Rate limit exceeded
+invalid_input: Invalid search query parameter
+max_uses_exceeded: Maximum web search tool uses exceeded
+query_too_long: Query exceeds maximum length
+unavailable: An internal error occurred
+​
+pause_turn stop reason
+
+The response may include a pause_turn stop reason, which indicates that the API paused a long-running turn. You may provide the response back as-is in a subsequent request to let Claude continue its turn, or modify the content if you wish to interrupt the conversation.
+
+​
+Prompt caching
+
+Web search works with prompt caching. To enable prompt caching, add at least one cache_control breakpoint in your request. The system will automatically cache up until the last web_search_tool_result block when executing the tool.
+
+For multi-turn conversations, set a cache_control breakpoint on or after the last web_search_tool_result block to reuse cached content.
+
+For example, to use prompt caching with web search for a multi-turn conversation:
+
+
+
+Copy
+import anthropic
+
+client = anthropic.Anthropic()
+
+# First request with web search and cache breakpoint
+messages = [
+    {
+        "role": "user",
+        "content": "What's the current weather in San Francisco today?"
+    }
+]
+
+response1 = client.messages.create(
+    model="claude-3-7-sonnet-latest",
+    max_tokens=1024,
+    messages=messages,
+    tools=[{
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "user_location": {
+            "type": "approximate",
+            "city": "San Francisco",
+            "region": "California",
+            "country": "US",
+            "timezone": "America/Los_Angeles"
+        }
+    }]
+)
+
+# Add Claude's response to the conversation
+messages.append({
+    "role": "assistant",
+    "content": response1.content
+})
+
+# Second request with cache breakpoint after the search results
+messages.append({
+    "role": "user",
+    "content": "Should I expect rain later this week?",
+    "cache_control": {"type": "ephemeral"}  # Cache up to this point
+})
+
+response2 = client.messages.create(
+    model="claude-3-7-sonnet-latest",
+    max_tokens=1024,
+    messages=messages,
+    tools=[{
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "user_location": {
+            "type": "approximate",
+            "city": "San Francisco",
+            "region": "California",
+            "country": "US",
+            "timezone": "America/Los_Angeles"
+        }
+    }]
+)
+# The second response will benefit from cached search results
+# while still being able to perform new searches if needed
+print(f"Cache read tokens: {response2.usage.get('cache_read_input_tokens', 0)}")
+​
+Streaming
+
+With streaming enabled, you’ll receive search events as part of the stream. There will be a pause while the search executes:
+
+
+Copy
+event: message_start
+data: {"type": "message_start", "message": {"id": "msg_abc123", "type": "message"}}
+
+event: content_block_start
+data: {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}
+
+// Claude's decision to search
+
+event: content_block_start
+data: {"type": "content_block_start", "index": 1, "content_block": {"type": "server_tool_use", "id": "srvtoolu_xyz789", "name": "web_search"}}
+
+// Search query streamed
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 1, "delta": {"type": "input_json_delta", "partial_json": "{\"query\":\"latest quantum computing breakthroughs 2025\"}"}}
+
+// Pause while search executes
+
+// Search results streamed
+event: content_block_start
+data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web_search_tool_result", "tool_use_id": "srvtoolu_xyz789", "content": [{"type": "web_search_result", "title": "Quantum Computing Breakthroughs in 2025", "url": "https://example.com"}]}}
+
+// Claude's response with citations (omitted in this example)
+​
+Batch requests
+
+You can include the web search tool in the Messages Batches API. Web search tool calls through the Messages Batches API are priced the same as those in regular Messages API requests.
+
+​
+Usage and pricing
+
+Web search usage is charged in addition to token usage:
+
+
+Copy
+"usage": {
+  "input_tokens": 105,
+  "output_tokens": 6039,
+  "cache_read_input_tokens": 7123,
+  "cache_creation_input_tokens": 7345,
+  "server_tool_use": {
+    "web_search_requests": 1
+  }
+}
+Web search is available on the Anthropic API for $10 per 1,000 searches, plus standard token costs for search-generated content. Web search results retrieved throughout a conversation are counted as input tokens, in search iterations executed during a single turn and in subsequent conversation turns.
+
+Each web search counts as one use, regardless of the number of results returned. If an error occurs during web search, the web search will not be billed.

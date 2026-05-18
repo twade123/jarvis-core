@@ -1,0 +1,1640 @@
+{
+  "test_start_time": "2025-07-03 17:44:05.794955",
+  "test_end_time": "2025-07-03 17:44:25.761926",
+  "total_scenarios": 14,
+  "successful_scenarios": 10,
+  "failed_scenarios": 4,
+  "test_results": [
+    {
+      "scenario_id": "basic_small",
+      "success": true,
+      "duration_seconds": 0.009337663650512695,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 10,
+          "size_bytes": 65536,
+          "size_mb": 0.0625,
+          "free_space_mb": 657877.078125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.0055408477783203125,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 10,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 10,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          25.484375
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 25.484375,
+        "max_memory_usage": 25.484375
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 10 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "basic_medium",
+      "success": true,
+      "duration_seconds": 0.04388022422790527,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 100,
+          "size_bytes": 434176,
+          "size_mb": 0.4140625,
+          "free_space_mb": 657876.7265625
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.010867118835449219,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 100,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 100,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          26.9375
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 26.9375,
+        "max_memory_usage": 26.9375
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 100 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "basic_large",
+      "success": true,
+      "duration_seconds": 0.17198586463928223,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 1000,
+          "size_bytes": 4222976,
+          "size_mb": 4.02734375,
+          "free_space_mb": 657873.109375
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.030319929122924805,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 1000,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 1000,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          31.09375
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 31.09375,
+        "max_memory_usage": 31.09375
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 1000 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "performance_xlarge",
+      "success": true,
+      "duration_seconds": 1.367704153060913,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 10000,
+          "size_bytes": 42160128,
+          "size_mb": 40.20703125,
+          "free_space_mb": 657836.9375
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.27452802658081055,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 10000,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 10000,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          55.671875
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 55.671875,
+        "max_memory_usage": 55.671875
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 10000 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "corruption_test",
+      "success": true,
+      "duration_seconds": 0.02978205680847168,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 100,
+          "size_bytes": 229376,
+          "size_mb": 0.21875,
+          "free_space_mb": 657876.92578125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.011155128479003906,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 100,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 100,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          56.984375
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 56.984375,
+        "max_memory_usage": 56.984375
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 100 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "concurrent_access",
+      "success": true,
+      "duration_seconds": 0.04155683517456055,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 100,
+          "size_bytes": 434176,
+          "size_mb": 0.4140625,
+          "free_space_mb": 657876.73046875
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.009767770767211914,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 100,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 100,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          57.015625
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 57.015625,
+        "max_memory_usage": 57.015625
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 100 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "rollback_after_step1",
+      "success": false,
+      "duration_seconds": 0.032846927642822266,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 50,
+          "size_bytes": 229376,
+          "size_mb": 0.21875,
+          "free_space_mb": 657873.99609375
+        }
+      },
+      "migration_result": {
+        "success": false,
+        "completed_steps": [
+          "01_add_conversation_summary"
+        ],
+        "failed_step": "02_add_conversation_pointers",
+        "error_message": "Simulated failure for rollback testing",
+        "backup_path": null,
+        "rollback_applied": true,
+        "migration_time": null,
+        "validation_results": null
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [
+          "Optional index missing: idx_conversation_summary",
+          "Optional index missing: idx_conversation_pointers"
+        ],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "missing",
+          "index_idx_conversation_pointers": "missing"
+        },
+        "data_validation": {
+          "total_rows": 6,
+          "null_conversation_summary": 6,
+          "null_conversation_pointers": 6
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          56.984375
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 56.984375,
+        "max_memory_usage": 56.984375
+      },
+      "data_integrity_results": {
+        "valid": false,
+        "checks_performed": [
+          "Row count check: 6 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed"
+        ],
+        "issues_found": [
+          "Row count mismatch: expected 50, found 6"
+        ],
+        "warnings": []
+      },
+      "rollback_results": {
+        "success": true,
+        "details": [
+          "Rollback successfully performed after migration failure"
+        ]
+      },
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "rollback_after_step2",
+      "success": false,
+      "duration_seconds": 0.0322110652923584,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 50,
+          "size_bytes": 229376,
+          "size_mb": 0.21875,
+          "free_space_mb": 657874.703125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.010768890380859375,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 50,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 50,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          57.0
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 57.0,
+        "max_memory_usage": 57.0
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 50 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": {
+        "success": false,
+        "details": []
+      },
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "rollback_post_validation_fail",
+      "success": false,
+      "duration_seconds": 0.03520512580871582,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 50,
+          "size_bytes": 229376,
+          "size_mb": 0.21875,
+          "free_space_mb": 657874.69921875
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.010907173156738281,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 50,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 50,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          57.0
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 57.0,
+        "max_memory_usage": 57.0
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 50 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": {
+        "success": false,
+        "details": []
+      },
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "complex_json_data",
+      "success": false,
+      "duration_seconds": 0.006375312805175781,
+      "pre_migration_validation": {},
+      "migration_result": null,
+      "post_migration_validation": {},
+      "performance_metrics": {},
+      "data_integrity_results": {},
+      "rollback_results": null,
+      "error_message": "name 'current_time' is not defined",
+      "warnings": null
+    },
+    {
+      "scenario_id": "null_data_handling",
+      "success": true,
+      "duration_seconds": 0.027005910873413086,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 50,
+          "size_bytes": 229376,
+          "size_mb": 0.21875,
+          "free_space_mb": 657874.67578125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.010535001754760742,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 50,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 50,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          57.015625
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 57.015625,
+        "max_memory_usage": 57.015625
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 50 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "special_characters",
+      "success": true,
+      "duration_seconds": 0.019871950149536133,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 25,
+          "size_bytes": 126976,
+          "size_mb": 0.12109375,
+          "free_space_mb": 657874.7734375
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.009428977966308594,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 25,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 25,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          57.015625
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 57.015625,
+        "max_memory_usage": 57.015625
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 25 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "memory_stress",
+      "success": true,
+      "duration_seconds": 4.007838010787964,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 5000,
+          "size_bytes": 92950528,
+          "size_mb": 88.64453125,
+          "free_space_mb": 657778.83203125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.5898442268371582,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 5000,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 5000,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          87.921875
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 87.921875,
+        "max_memory_usage": 87.921875
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 5000 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    },
+    {
+      "scenario_id": "disk_space_limited",
+      "success": true,
+      "duration_seconds": 0.09656214714050293,
+      "pre_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "migration_needed": true,
+        "database_stats": {
+          "row_count": 500,
+          "size_bytes": 2129920,
+          "size_mb": 2.03125,
+          "free_space_mb": 657872.86328125
+        }
+      },
+      "migration_result": {
+        "success": true,
+        "completed_steps": [
+          "01_add_conversation_summary",
+          "02_add_conversation_pointers",
+          "03_create_conversation_index",
+          "04_populate_initial_data"
+        ],
+        "failed_step": null,
+        "error_message": null,
+        "backup_path": "~/Jarvis/Jarvis_Agent_SDK/backups/pre_migration_backup.zip",
+        "rollback_applied": false,
+        "migration_time": 0.015977859497070312,
+        "validation_results": {
+          "valid": true,
+          "issues": [],
+          "warnings": [],
+          "schema_validation": {
+            "conversation_summary": "present",
+            "conversation_pointers": "present",
+            "index_idx_conversation_summary": "present",
+            "index_idx_conversation_pointers": "present"
+          },
+          "data_validation": {
+            "total_rows": 500,
+            "null_conversation_summary": 0,
+            "null_conversation_pointers": 0
+          }
+        }
+      },
+      "post_migration_validation": {
+        "valid": true,
+        "issues": [],
+        "warnings": [],
+        "schema_validation": {
+          "conversation_summary": "present",
+          "conversation_pointers": "present",
+          "index_idx_conversation_summary": "present",
+          "index_idx_conversation_pointers": "present"
+        },
+        "data_validation": {
+          "total_rows": 500,
+          "null_conversation_summary": 0,
+          "null_conversation_pointers": 0
+        }
+      },
+      "performance_metrics": {
+        "cpu_usage": [
+          0.0
+        ],
+        "memory_usage": [
+          88.0625
+        ],
+        "disk_io": [],
+        "database_size_changes": [
+          0
+        ],
+        "avg_cpu_usage": 0.0,
+        "max_cpu_usage": 0.0,
+        "avg_memory_usage": 88.0625,
+        "max_memory_usage": 88.0625
+      },
+      "data_integrity_results": {
+        "valid": true,
+        "checks_performed": [
+          "Row count check: 500 rows",
+          "Column id: present",
+          "Column task_hash: present",
+          "Column task_text: present",
+          "Column workspace_id: present",
+          "Column execution_plan: present",
+          "Column performance_score: present",
+          "Column timestamp: present",
+          "Column embedding: present",
+          "Column agent_team: present",
+          "Column team_interaction_data: present",
+          "Column boardroom_session_id: present",
+          "New column conversation_summary: present",
+          "New column conversation_pointers: present",
+          "SQLite integrity check: passed",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid",
+          "JSON validity check: field 0 valid",
+          "JSON validity check: field 1 valid"
+        ],
+        "issues_found": [],
+        "warnings": []
+      },
+      "rollback_results": null,
+      "error_message": null,
+      "warnings": []
+    }
+  ],
+  "performance_summary": {
+    "total_performance_tests": 2,
+    "successful_performance_tests": 2,
+    "average_duration": 0.7698450088500977,
+    "max_duration": 1.367704153060913,
+    "min_duration": 0.17198586463928223,
+    "performance_within_expectations": false
+  },
+  "edge_case_summary": {
+    "total_edge_case_tests": 4,
+    "successful_edge_case_tests": 4,
+    "edge_case_success_rate": 100.0,
+    "corruption_handling": true,
+    "concurrent_access_handling": true
+  },
+  "rollback_summary": {
+    "total_rollback_tests": 3,
+    "successful_rollback_tests": 1,
+    "rollback_success_rate": 33.33333333333333,
+    "rollback_reliability": false
+  },
+  "recommendations": [
+    "Overall success rate is 71.4%. Consider addressing failed scenarios before production deployment.",
+    "Rollback tests failed. Ensure backup and restore procedures are reliable.",
+    "Data integrity issues detected. Review migration logic and validation procedures.",
+    "Migration script needs improvement before production deployment."
+  ],
+  "production_readiness_score": 81.19047619047619
+}

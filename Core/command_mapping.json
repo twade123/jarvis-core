@@ -1,0 +1,6 @@
+{
+    "MOCK_INTENT": {
+        "response": "This is a placeholder handler for 'MOCK_INTENT'. Please implement this function.",
+        "weight": 1.0
+    }
+}

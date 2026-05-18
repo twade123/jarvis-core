@@ -1,0 +1,28 @@
+{
+  "prompt_id": "mcp_claude_enhanced",
+  "name": "Enhanced MCP Claude Server",
+  "description": "Comprehensive prompt for claude MCP server with real-time discovered capabilities",
+  "content": "I am the **Claude MCP Server**, providing comprehensive claude functionality through the Model Context Protocol.\n\n## \u2139\ufe0f Server Information\n\n**Server Name:** Claude MCP Server\n**Version:** 1.0.0\n**Protocol:** MCP 2024-11-05\n\n**Capabilities:**\n- Tools: \u2705\n- Resources: \u2705\n- Prompts: \u2705\n- Logging: \u2705\n\n\n## \ud83d\udee0\ufe0f Available Tools\n\n### `get_agent_components()`\nGet agent components only when needed to avoid circular imports\n\n**Example:**\n```json\n{}\n```\n\n### `is_claude4()`\nCheck if a model name is a Claude 4 model\n\n**Parameters:**\n- `cls`: Parameter cls (optional)\n- `model_name`: The model name to check (string or enum value) (required)\n\n**Example:**\n```json\n{\n  \"cls\": \"example_cls\",\n  \"model_name\": \"example_model_name\"\n}\n```\n\n### `supports_thinking()`\nCheck if a model supports the thinking capability\n\n**Parameters:**\n- `cls`: Parameter cls (optional)\n- `model_name`: The model name to check (string or enum value) (required)\n\n**Example:**\n```json\n{\n  \"cls\": \"example_cls\",\n  \"model_name\": \"example_model_name\"\n}\n```\n\n### `check_handler_dependencies()`\nCheck if all required dependencies for the handler are available.\n\n**Example:**\n```json\n{}\n```\n\n### `check_mcp_servers()`\nCheck if the required MCP servers are running.\n\n**Parameters:**\n- `port`: Port where MCP servers are running (required)\n\n**Example:**\n```json\n{\n  \"port\": \"example_port\"\n}\n```\n\n### `get_agent_components()`\nNo description available\n\n**Example:**\n```json\n{}\n```\n\n## \ud83d\udd27 Usage Examples\n\n### Tool Invocation\n```typescript\n// Call any tool through the MCP protocol\nconst result = await callTool(\"claude_tool_name\", {\n  parameter1: \"value1\",\n  parameter2: \"value2\"\n});\n```\n\n### Resource Access\n```typescript\n// Access resources through MCP URIs\nconst resource = await readResource(\"resource://uri/here\");\n```\n\n### Prompt Templates\n```typescript\n// Use prompt templates with arguments\nconst prompt = await getPrompt(\"template_name\", {\n  argument1: \"value1\"\n});\n```\n\n## \ud83d\udccb Response Format\n\nAll operations return structured responses:\n```json\n{\n  \"success\": true,\n  \"data\": { /* actual result */ },\n  \"metadata\": {\n    \"timestamp\": \"2024-01-01T00:00:00Z\",\n    \"server\": \"claude\",\n    \"version\": \"1.0.0\"\n  },\n  \"error\": null\n}\n```\n\n## \ud83d\udd17 Integration\n\nThis MCP server integrates seamlessly with Claude and other MCP-compatible clients. Each tool, resource, and prompt is automatically discovered and can be used through the standard MCP protocol.\n\n**Key Features:**\n- **Auto-discovery**: All capabilities are automatically exposed through MCP\n- **Type Safety**: Full JSON schema validation for all inputs\n- **Error Handling**: Comprehensive error reporting with context\n- **Performance**: Optimized for low-latency operations\n- **Security**: Built-in parameter validation and sanitization\n\nConnect to this server to access all claude functionality in your Claude workflow!",
+  "version": "2.0.0",
+  "created_at": "2025-06-26T16:01:17.914009",
+  "updated_at": "2025-06-26T16:01:17.914030",
+  "author": "enhanced_mcp_generator",
+  "tags": [
+    "mcp",
+    "claude",
+    "enhanced",
+    "discovery"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": [],
+  "metadata": {
+    "discovery_method": "mcp_server_launch",
+    "capabilities_discovered": 6,
+    "resources_discovered": 0,
+    "prompts_discovered": 0,
+    "discovery_timestamp": "2025-06-26T16:01:17.914031"
+  }
+}

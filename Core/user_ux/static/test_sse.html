@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Test Client</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f7;
+        }
+        
+        h1, h2, h3 {
+            color: #1d1d1f;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .connected {
+            background-color: #34c759;
+        }
+        
+        .connecting {
+            background-color: #ff9500;
+        }
+        
+        .disconnected {
+            background-color: #ff3b30;
+        }
+        
+        .event-log {
+            background-color: #f2f2f7;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0062cc;
+        }
+        
+        .event {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #007aff;
+        }
+        
+        .event-type {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .event-data {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .claude-message {
+            border-left-color: #9966cc;
+        }
+        
+        .gpt-message {
+            border-left-color: #11a37f;
+        }
+        
+        .system-message {
+            border-left-color: #ff9500;
+        }
+        
+        .user-message {
+            border-left-color: #007aff;
+        }
+        
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #c7c7cc;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>SSE Test Client</h1>
+        
+        <div class="connection-status">
+            <div class="status-indicator disconnected" id="status-indicator"></div>
+            <span id="status-text">Disconnected</span>
+        </div>
+        
+        <div class="controls">
+            <button id="connect-btn">Connect</button>
+            <button id="disconnect-btn">Disconnect</button>
+            <button id="clear-log-btn">Clear Log</button>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="session-id" placeholder="Session ID (optional)">
+            <button id="set-session-btn">Set Session ID</button>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="message-input" placeholder="Enter message to send">
+            <button id="send-msg-btn">Send Message</button>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Event Log</h2>
+        <div class="event-log" id="event-log"></div>
+    </div>
+
+    <div class="card">
+        <h2>Boardroom Messages</h2>
+        <div class="event-log" id="boardroom-container"></div>
+    </div>
+    
+    <script>
+        // Global variables
+        let eventSource = null;
+        let sessionId = localStorage.getItem('test_session_id') || 'test_' + Date.now();
+        
+        // DOM elements
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const clearLogBtn = document.getElementById('clear-log-btn');
+        const eventLog = document.getElementById('event-log');
+        const boardroomContainer = document.getElementById('boardroom-container');
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const sessionIdInput = document.getElementById('session-id');
+        const setSessionBtn = document.getElementById('set-session-btn');
+        const messageInput = document.getElementById('message-input');
+        const sendMsgBtn = document.getElementById('send-msg-btn');
+        
+        // Initialize session ID input
+        sessionIdInput.value = sessionId;
+        
+        // Event listeners
+        connectBtn.addEventListener('click', connectSSE);
+        disconnectBtn.addEventListener('click', disconnectSSE);
+        clearLogBtn.addEventListener('click', clearLog);
+        setSessionBtn.addEventListener('click', setSessionId);
+        sendMsgBtn.addEventListener('click', sendMessage);
+        
+        // Functions
+        function connectSSE() {
+            if (eventSource) {
+                disconnectSSE();
+            }
+            
+            updateStatus('connecting', 'Connecting...');
+            
+            try {
+                const url = `/events?session_id=${sessionId}`;
+                eventSource = new EventSource(url);
+                
+                // Set up event listeners
+                eventSource.onopen = function() {
+                    updateStatus('connected', 'Connected');
+                    logEvent('system', 'Connected to SSE server');
+                };
+                
+                eventSource.onerror = function(error) {
+                    console.error('EventSource error:', error);
+                    updateStatus('disconnected', 'Connection error');
+                    logEvent('error', 'Connection error');
+                };
+                
+                // Event-specific listeners
+                eventSource.addEventListener('connection', handleConnection);
+                eventSource.addEventListener('message', handleMessage);
+                eventSource.addEventListener('boardroom_update', handleBoardroomUpdate);
+                eventSource.addEventListener('connection_confirmed', handleConnectionConfirmed);
+                
+                // Generic event handler for all other events
+                eventSource.onmessage = function(event) {
+                    logEvent('unknown', event.data);
+                };
+                
+                // Send client_ready event
+                sendClientReady();
+                
+            } catch (error) {
+                console.error('Error creating EventSource:', error);
+                updateStatus('disconnected', 'Connection failed');
+                logEvent('error', `Connection failed: ${error.message}`);
+            }
+        }
+        
+        function disconnectSSE() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+                updateStatus('disconnected', 'Disconnected');
+                logEvent('system', 'Disconnected from SSE server');
+            }
+        }
+        
+        function clearLog() {
+            eventLog.innerHTML = '';
+            logEvent('system', 'Log cleared');
+        }
+        
+        function setSessionId() {
+            const newSessionId = sessionIdInput.value.trim();
+            if (newSessionId) {
+                sessionId = newSessionId;
+                localStorage.setItem('test_session_id', sessionId);
+                logEvent('system', `Session ID set to: ${sessionId}`);
+                
+                // Reconnect if already connected
+                if (eventSource) {
+                    disconnectSSE();
+                    connectSSE();
+                }
+            } else {
+                logEvent('error', 'Session ID cannot be empty');
+            }
+        }
+        
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) {
+                logEvent('error', 'Message cannot be empty');
+                return;
+            }
+            
+            fetch('/api/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event_type: 'send_message',
+                    data: {
+                        session_id: sessionId,
+                        message: message,
+                        timestamp: Date.now()
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                logEvent('sent', `Message sent: "${message}"`);
+                messageInput.value = '';
+            })
+            .catch(error => {
+                logEvent('error', `Error sending message: ${error.message}`);
+            });
+        }
+        
+        function sendClientReady() {
+            fetch('/api/client_ready', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    client_info: {
+                        userAgent: navigator.userAgent,
+                        timestamp: Date.now()
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                logEvent('sent', 'Client ready signal sent');
+            })
+            .catch(error => {
+                logEvent('error', `Error sending client ready: ${error.message}`);
+            });
+        }
+        
+        // Event handlers
+        function handleConnection(event) {
+            const data = JSON.parse(event.data);
+            updateStatus('connected', 'Connected to server');
+            logEvent('connection', data);
+        }
+        
+        function handleMessage(event) {
+            const data = JSON.parse(event.data);
+            logEvent('message', data);
+        }
+        
+        function handleBoardroomUpdate(event) {
+            const data = JSON.parse(event.data);
+            logEvent('boardroom_update', data);
+            addBoardroomMessage(data);
+        }
+        
+        function handleConnectionConfirmed(event) {
+            const data = JSON.parse(event.data);
+            updateStatus('connected', 'Connection confirmed');
+            logEvent('connection_confirmed', data);
+        }
+        
+        // UI update functions
+        function updateStatus(status, message) {
+            statusIndicator.className = 'status-indicator ' + status;
+            statusText.textContent = message;
+        }
+        
+        function logEvent(type, data) {
+            const eventElement = document.createElement('div');
+            eventElement.className = 'event';
+            
+            const typeElement = document.createElement('div');
+            typeElement.className = 'event-type';
+            typeElement.textContent = type;
+            
+            const dataElement = document.createElement('div');
+            dataElement.className = 'event-data';
+            
+            if (typeof data === 'object') {
+                dataElement.textContent = JSON.stringify(data, null, 2);
+            } else {
+                dataElement.textContent = data;
+            }
+            
+            eventElement.appendChild(typeElement);
+            eventElement.appendChild(dataElement);
+            eventLog.appendChild(eventElement);
+            eventLog.scrollTop = eventLog.scrollHeight;
+        }
+        
+        function addBoardroomMessage(data) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'event';
+            
+            // Add role-specific class
+            const role = data.role ? data.role.toLowerCase() : 'system';
+            if (role.includes('claude')) {
+                messageElement.classList.add('claude-message');
+            } else if (role.includes('gpt')) {
+                messageElement.classList.add('gpt-message');
+            } else if (role === 'system') {
+                messageElement.classList.add('system-message');
+            } else if (role === 'user') {
+                messageElement.classList.add('user-message');
+            }
+            
+            // Add message header
+            const headerElement = document.createElement('div');
+            headerElement.className = 'event-type';
+            headerElement.textContent = data.role || 'Unknown';
+            if (data.turn_number) {
+                headerElement.textContent += ` (Turn ${data.turn_number})`;
+            }
+            
+            // Add message content
+            const contentElement = document.createElement('div');
+            contentElement.className = 'event-data';
+            contentElement.textContent = data.content || JSON.stringify(data);
+            
+            messageElement.appendChild(headerElement);
+            messageElement.appendChild(contentElement);
+            boardroomContainer.appendChild(messageElement);
+            boardroomContainer.scrollTop = boardroomContainer.scrollHeight;
+        }
+        
+        // Connect on page load
+        connectSSE();
+    </script>
+</body>
+</html>

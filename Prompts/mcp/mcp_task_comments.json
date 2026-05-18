@@ -1,0 +1,20 @@
+{
+  "prompt_id": "mcp_task_comments",
+  "name": "MCP Task_Comments Server",
+  "description": "Detailed prompt for the task_comments MCP server with real methods and examples",
+  "content": "I am the Task_Comments MCP Server. I provide Provides task comments functionality.\n\n## What I Can Do:\nProvides task comments functionality\n\n## Common Use Cases:\n1. Manage task comments operations\n\n\n## Available Tools:\n\n### `test_workspace_task_comments(no parameters)`\nTest function for workspace task comments functionality.\n\n### `add_comment(task_id, author_id, author_type, content, technical_details)`\nAdd a comment to a task.\n\nArgs:\n    task_id: The ID of the task to comment on\n    author_id: ID or name of the comment author\n    author_type: Type of author (agent, user, system)\n    content: The com...\n\n### `get_task_comments(task_id)`\nRetrieve all comments for a task in chronological order.\n\nArgs:\n    task_id: The ID of the task\n    \nReturns:\n    Tuple of (success, list_of_comments or error_message)\n\n### `delete_comment(comment_id)`\nDelete a comment by ID.\n\nArgs:\n    comment_id: The ID of the comment to delete\n    \nReturns:\n    Tuple of (success, message)\n\n### `update_comment_content(comment_id, new_content)`\nUpdate the content of an existing comment.\n\nArgs:\n    comment_id: The ID of the comment to update\n    new_content: The new content for the comment\n    \nReturns:\n    Tuple of (success, message)\n\n### `update_technical_details(comment_id, technical_details)`\nUpdate the technical details of an existing comment.\n\nArgs:\n    comment_id: The ID of the comment to update\n    technical_details: The new technical details for the comment\n    \nReturns:\n    Tuple of ...\n\n### `get_comment_by_id(comment_id)`\nGet a single comment by its ID.\n\nArgs:\n    comment_id: The ID of the comment to retrieve\n    \nReturns:\n    Tuple of (success, comment_data or error_message)\n\n### `get_comments_by_author(author_id, author_type)`\nGet all comments by a specific author, optionally filtered by author type.\n\nArgs:\n    author_id: The author ID to filter by\n    author_type: Optional author type to further filter results\n    \nReturns...\n\n### `get_task_conversation_thread(task_id)`\nGet a complete conversation thread for a task, including task details and all comments.\n\nArgs:\n    task_id: The ID of the task\n    \nReturns:\n    Tuple of (success, conversation_thread or error_message...\n\n## Authentication:\nMay require authentication\n\n## Example Usage:\n```python\n# Call tools through MCP protocol\nresult = await call_tool(\"task_comments_tool_name\", {\n    \"parameter1\": \"value1\",\n    \"parameter2\": \"value2\"\n})\n```\n\n## Response Format:\nAll tools return structured JSON responses with:\n- `success`: boolean indicating if operation succeeded\n- `data`: the actual result data\n- `error`: error message if operation failed\n\n## Integration:\nUse this MCP server to integrate task comments functionality into your Claude workflow. Each tool is exposed via the Model Context Protocol for seamless integration.",
+  "version": "1.0.0",
+  "created_at": "2025-06-26T15:44:14.298068",
+  "updated_at": "2025-06-26T15:44:14.298071",
+  "author": "automated_docstring_extractor",
+  "tags": [
+    "mcp",
+    "task_comments",
+    "detailed"
+  ],
+  "model_compatibility": [
+    "claude",
+    "gpt"
+  ],
+  "variables": []
+}
