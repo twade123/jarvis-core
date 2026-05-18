@@ -8,6 +8,21 @@ It's been running daily since early 2025. This repo is the orchestration core.
 
 ---
 
+## See it in motion
+
+Four short Remotion-rendered walkthroughs of the live UI (each ~20-25s):
+
+| Surface | Video |
+|---|---|
+| **Conversation** — main UI surface (left rail history, streaming responses, workspace context) | [docs/videos/01-conversation.mp4](docs/videos/01-conversation.mp4) |
+| **Workspaces** — pluggable surfaces (forex, marketing, doctor, vault keeper) | [docs/videos/02-workspaces.mp4](docs/videos/02-workspaces.mp4) |
+| **BoardRoom** — 17 seats deliberating on 6 shared MLX servers | [docs/videos/03-boardroom.mp4](docs/videos/03-boardroom.mp4) |
+| **Vault** — read-before / write-after shared memory across all agents | [docs/videos/04-vault.mp4](docs/videos/04-vault.mp4) |
+
+> GitHub renders MP4s inline when you click — or download for full quality. Built with [Remotion](https://www.remotion.dev/) (React → video).
+
+---
+
 ## The 5 things worth looking at
 
 ### 1. "One Brain" — unified skill substrate across 5 surfaces
