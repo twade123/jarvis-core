@@ -163,23 +163,6 @@ One cluster, one team. The 7-agent marketing system: a top-level strategy + orch
 
 | Skill | One-line role |
 |---|---|
-| `marketing-sales-gtm` | Sales + GTM orchestrator |
-| `sales-enablement` | Sales collateral — pitch decks, one-pagers, objection handling, demo scripts |
-| `account-research` | Research a company/person → actionable sales intel |
-| `call-prep` | Prep for sales calls — account context, attendee research, suggested agenda |
-| `daily-briefing` | Prioritized morning sales briefing |
-| `draft-outreach` | Research prospect → personalized outreach (cold email) |
-| `create-an-asset` | Generate tailored sales assets — landing pages, decks, one-pagers, workflow demos |
-| `competitive-analysis` | Research competitors, positioning, messaging, content strategy, market presence |
-| `competitive-intelligence` | Build interactive competitor battlecards (HTML artifact) |
-| `competitor-alternatives` | Create competitor comparison / alternative pages for SEO + sales |
-| `pricing-strategy` | Pricing decisions, packaging, monetization — tiers, freemium, value metric |
-| `revops` | Revenue operations — lead lifecycle, MQL/SQL, pipeline stages, marketing-to-sales handoff |
-
-## 10. Legal
-
-| Skill | One-line role |
-|---|---|
 | `compliance` | Privacy regs (GDPR, CCPA), DPA review, data subject requests, cross-border transfers |
 | `contract-review` | Review contracts against negotiation playbook, flag deviations, suggest redlines |
 | `legal-risk-assessment` | Assess + classify legal risks (severity × likelihood + escalation criteria) |
