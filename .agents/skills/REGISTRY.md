@@ -73,27 +73,29 @@ The vault layer and how agents reason over stored knowledge.
 | `doc-coauthoring` | Structured workflow for co-authoring docs, PRDs, technical specs |
 | `data-context-extractor` | Bootstrap company-specific data analysis skills from analyst tribal knowledge |
 
-## 4. Marketing — Strategy & Orchestration
+## 4. Marketing
 
-High-level marketing thinking + the orchestrators that route marketing work.
+One cluster, one team. The 7-agent marketing system: a top-level strategy + orchestrator, six sub-orchestrators (one per sub-team), and the specialists each sub-team draws on.
+
+### 4a. Strategy & top-level orchestration
 
 | Skill | One-line role |
 |---|---|
-| `marketing-strategy` | Strategic marketing direction (top-level marketing-team orchestrator) |
-| `marketing-orchestrator` | Coordinates the 7-agent marketing team across SEO/CRO/Content/Paid/Growth/Sales/Strategy |
-| `marketing-ideas` | Generate marketing ideas, inspiration, growth tactics for SaaS/software |
+| `marketing-orchestrator` | **Top of the marketing tree** — coordinates the 7-agent marketing team across SEO / CRO / Content / Paid / Growth / Sales / Strategy |
+| `marketing-strategy` | Strategic marketing direction — what to do and why |
+| `marketing-ideas` | Marketing ideas, inspiration, growth tactics for SaaS / software |
 | `marketing-psychology` | Apply cognitive biases, behavioral science, mental models to marketing |
 | `campaign-planning` | Plan marketing campaigns — objectives, segmentation, channels, calendars, metrics |
 | `launch-strategy` | Plan product launches — Product Hunt, GTM, waitlists, feature announcements |
 | `product-marketing-context` | Create / maintain product marketing context docs (positioning, audience, value) |
 
-## 5. Marketing — Content, Copy & SEO
+### 4b. Content, Copy & SEO — sub-team
 
 | Skill | One-line role |
 |---|---|
-| `marketing-content-copy` | Content & copy orchestrator (sub-team of marketing) |
-| `marketing-seo-content` | SEO + content orchestrator |
-| `copywriting` | Write/rewrite marketing copy for any page (homepage, landing, pricing, features) |
+| `marketing-content-copy` | **Sub-orchestrator** — content + copy team coordinator |
+| `marketing-seo-content` | **Sub-orchestrator** — SEO + content team coordinator |
+| `copywriting` | Write / rewrite marketing copy for any page (home, landing, pricing, features) |
 | `copy-editing` | Edit, review, polish existing copy |
 | `content-creation` | Draft cross-channel content (blog, social, email, landing pages, press, case studies) |
 | `content-strategy` | Plan content strategy — what to write about, topic clusters, blog strategy |
@@ -106,33 +108,33 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `seo-audit` | Audit / diagnose SEO issues — technical, on-page, Core Web Vitals, rankings |
 | `programmatic-seo` | Create SEO pages at scale via templates + data |
 | `schema-markup` | Add / fix structured data (JSON-LD, FAQ schema, product schema, rich snippets) |
-| `site-architecture` | Plan/restructure page hierarchy, navigation, URL structure, internal linking |
+| `site-architecture` | Plan / restructure page hierarchy, navigation, URL structure, internal linking |
 
-## 6. Marketing — Paid, Analytics, Experimentation
+### 4c. Paid, Analytics & Experimentation — sub-team
 
 | Skill | One-line role |
 |---|---|
-| `marketing-paid-measurement` | Paid + measurement orchestrator |
-| `paid-ads` | Manage campaigns on Google/Meta/LinkedIn/X — PPC, ROAS, CPA, retargeting |
+| `marketing-paid-measurement` | **Sub-orchestrator** — paid + measurement team coordinator |
+| `paid-ads` | Manage campaigns on Google / Meta / LinkedIn / X — PPC, ROAS, CPA, retargeting |
 | `analytics-tracking` | Set up / audit GA4, conversion tracking, event tracking, UTM, GTM |
 | `ab-test-setup` | Plan / design / implement A/B tests + experiments |
 | `performance-analytics` | Analyze marketing performance, trends, channel metrics, recommendations |
 
-## 7. Marketing — Growth & Retention
+### 4d. Growth & Retention — sub-team
 
 | Skill | One-line role |
 |---|---|
-| `marketing-growth-retention` | Growth + retention orchestrator |
+| `marketing-growth-retention` | **Sub-orchestrator** — growth + retention team coordinator |
 | `churn-prevention` | Reduce churn — cancellation flows, save offers, dunning, retention |
 | `lead-magnets` | Plan / optimize lead magnets — gated content, ebooks, checklists, templates |
 | `referral-program` | Build / optimize referral, affiliate, ambassador, viral-loop programs |
 | `free-tool-strategy` | Engineering-as-marketing — calculators, generators, free tools for lead gen |
 
-## 8. Marketing — CRO (Conversion Rate Optimization)
+### 4e. CRO (Conversion Rate Optimization) — sub-team
 
 | Skill | One-line role |
 |---|---|
-| `marketing-cro` | CRO orchestrator |
+| `marketing-cro` | **Sub-orchestrator** — CRO team coordinator |
 | `page-cro` | Optimize any marketing page (home, landing, pricing, features, blog) for conversions |
 | `signup-flow-cro` | Optimize signup, registration, account creation, trial activation |
 | `onboarding-cro` | Optimize post-signup onboarding, activation, first-run, time-to-value |
@@ -140,7 +142,24 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `popup-cro` | Create / optimize popups, modals, overlays, exit intent, slide-ins, banners |
 | `paywall-upgrade-cro` | Create / optimize paywalls, upgrade screens, upsell modals, feature gates |
 
-## 9. Sales & GTM
+### 4f. Sales & GTM — sub-team (lives inside the marketing cluster per Tim's org)
+
+| Skill | One-line role |
+|---|---|
+| `marketing-sales-gtm` | **Sub-orchestrator** — sales + GTM team coordinator |
+| `sales-enablement` | Sales collateral — pitch decks, one-pagers, objection handling, demo scripts |
+| `account-research` | Research a company / person → actionable sales intel |
+| `call-prep` | Prep for sales calls — account context, attendee research, suggested agenda |
+| `daily-briefing` | Prioritized morning sales briefing |
+| `draft-outreach` | Research prospect → personalized outreach (cold email) |
+| `create-an-asset` | Generate tailored sales assets — landing pages, decks, one-pagers, workflow demos |
+| `competitive-analysis` | Research competitors, positioning, messaging, content strategy, market presence |
+| `competitive-intelligence` | Build interactive competitor battlecards (HTML artifact) |
+| `competitor-alternatives` | Create competitor comparison / alternative pages for SEO + sales |
+| `pricing-strategy` | Pricing decisions, packaging, monetization — tiers, freemium, value metric |
+| `revops` | Revenue operations — lead lifecycle, MQL / SQL, pipeline stages, marketing-to-sales handoff |
+
+## 5. Legal
 
 | Skill | One-line role |
 |---|---|
@@ -168,7 +187,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `canned-responses` | Templated responses for routine legal inquiries (DSARs, vendor inquiries, NDA requests) |
 | `meeting-briefing` | Structured briefings for legal-relevant meetings + action item tracking |
 
-## 11. Finance / Accounting
+## 6. Finance / Accounting
 
 | Skill | One-line role |
 |---|---|
@@ -179,7 +198,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `close-management` | Manage month-end close — task sequencing, dependencies, status tracking |
 | `audit-support` | SOX 404 — control testing, sample selection, classification, audit prep |
 
-## 12. Customer Support
+## 7. Customer Support
 
 | Skill | One-line role |
 |---|---|
@@ -188,7 +207,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `response-drafting` | Draft customer-facing responses adapted to situation, urgency, channel |
 | `ticket-triage` | Triage tickets — categorize, prioritize (P1–P4), recommend routing |
 
-## 13. Product Management
+## 8. Product Management
 
 | Skill | One-line role |
 |---|---|
@@ -199,7 +218,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `playground` | Build interactive HTML playgrounds — visual controls, live preview, copy-out prompt |
 | `interactive-dashboard-builder` | Build self-contained interactive HTML dashboards (Chart.js + filters) |
 
-## 14. Data, Analytics & SQL
+## 9. Data, Analytics & SQL
 
 | Skill | One-line role |
 |---|---|
@@ -212,7 +231,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `search-strategy` | Query decomposition + multi-source search orchestration |
 | `source-management` | Manage connected MCP sources for enterprise search |
 
-## 15. Database Engineering
+## 10. Database Engineering
 
 | Skill | One-line role |
 |---|---|
@@ -221,7 +240,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `db-migration` | Schema migrations — safe alters, backfills, rollback strategies |
 | `db-troubleshoot` | Diagnose DB issues — locks, connection leaks, slow queries, corruption, WAL |
 
-## 16. Healthcare / Bioinformatics
+## 11. Healthcare / Bioinformatics
 
 | Skill | One-line role |
 |---|---|
@@ -234,7 +253,7 @@ High-level marketing thinking + the orchestrators that route marketing work.
 | `scvi-tools` | Deep learning for single-cell analysis — scVI/scANVI integration, PeakVI, totalVI |
 | `scientific-problem-selection` | Help scientists with project ideation, troubleshooting, strategic research decisions |
 
-## 17. Tool Specialists (one per MCP handler)
+## 12. Tool Specialists (one per MCP handler)
 
 Each is a thin expert layer over a specific MCP — they encapsulate the MCP's full surface area and best-practice usage.
 
@@ -254,7 +273,7 @@ Each is a thin expert layer over a specific MCP — they encapsulate the MCP's f
 | `wolfram-specialist` | Wolfram Alpha — computation, math, factual lookups, unit conversion |
 | `workspace-specialist` | Workspace MCP — project org, hierarchies, access, collaboration |
 
-## 18. Workspace Bootstrap & Internal Comms
+## 13. Workspace Bootstrap & Observability
 
 | Skill | One-line role |
 |---|---|
@@ -268,11 +287,11 @@ Each is a thin expert layer over a specific MCP — they encapsulate the MCP's f
 
 ## Stats
 
-- **145 active skills** across 18 capability clusters
+- **145 active skills** across **13 capability clusters**
 - **~30 AI / agent / plugin engineering skills** (the meta-layer)
-- **~50 marketing + sales skills** (4 sub-orchestrators × specialists)
+- **~50 marketing skills** in one tree: 1 top-level orchestrator + 6 sub-orchestrators + ~40 specialists (Strategy, Content+SEO, Paid, Growth, CRO, Sales/GTM)
 - **~13 tool specialists** (one per MCP handler)
-- **~8 healthcare / bio skills** (research clients)
+- **~8 healthcare / bio skills**
 - **~10 legal + finance + support skills** (business ops)
 
 ## Maintenance
