@@ -6,6 +6,8 @@ The system hosts live production workloads on top of itself — most notably the
 
 It's been running daily since early 2025. This repo is the orchestration core.
 
+> **The journey, not just the destination.** Earlier eras of this system live in [`legacy/`](./legacy/README.md) — when local distilled models weren't viable, Jarvis ran on spaCy + pattern-matching + a hand-trained intent classifier. The architecture pivoted when Qwen 35B + MLX became viable; the old layers stay visible so the evolution is legible.
+
 ---
 
 ## The 5 things worth looking at
@@ -98,10 +100,11 @@ Every agent in the system — Claude Code, BoardRoom seats, trading sub-agents (
 | `serve_ui.py` + `trevor_desktop.html` + `launch_trevor_desktop.sh` | The web UI (Flask + SSE + vanilla JS). |
 | `scripts/mlx_*.sh\|py` | MLX serving stack (the multi-tenant gateway). |
 | `knowledge/` | The full knowledge vault, scrubbed. The compounding memory. |
-| `.agents/skills/` | 160 skill definitions (the "One Brain" source). |
+| `.agents/skills/` | 145 skill definitions (the "One Brain" source). **See [`.agents/skills/REGISTRY.md`](./.agents/skills/REGISTRY.md) — clustered index by capability group.** |
 | `Prompts/boardroom/` | BoardRoom system prompts (CTO, CSO, etc. seat conditioning). |
 | `Prompts/trevor_core/` | Trevor's own system prompts. |
 | `Prompts/mcp/` | MCP server prompts (terminal guidelines, code exploration, etc.). |
+| `legacy/` | Pre-distillation architecture (spaCy / pattern-matching / intent-classifier era). **See [`legacy/README.md`](./legacy/README.md) for the architectural journey.** |
 | `CLAUDE.md` | Project-level Claude Code instructions — kept here because it's a load-bearing artifact of the daily workflow. |
 
 ---
